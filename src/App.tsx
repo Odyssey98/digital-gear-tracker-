@@ -6,11 +6,14 @@ import AddProductModal from './components/AddProductModal';
 import EditProductModal from './components/EditProductModal';
 import { Product } from './types';
 import { useProducts } from './hooks/useProducts';
+import { useDeviceInfo } from './hooks/useDeviceInfo';
 
 function App() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const { products, addProduct, updateProduct, deleteProduct } = useProducts([]);
+
+  useDeviceInfo();
 
   const handleAddProduct = (product: Product) => {
     addProduct(product);

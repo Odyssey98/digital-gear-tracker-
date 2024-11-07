@@ -1,5 +1,4 @@
-import React from 'react';
-import { Calculator, Calendar, Clock, DollarSign, Laptop, Trash2, Edit } from 'lucide-react';
+import {  Laptop, Trash2, Edit } from 'lucide-react';
 import { Product } from '../types';
 
 interface ProductCardProps {
@@ -13,11 +12,11 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
     const purchase = new Date(purchaseDate);
     const today = new Date();
     const diff = today.getTime() - purchase.getTime();
-    return Math.floor(diff / (1000 * 60 * 60 * 24));
+    return Math.max(1, Math.floor(diff / (1000 * 60 * 60 * 24)));
   };
 
   const daysOwned = getDaysOwned(product.purchaseDate);
-  const costPerDay = (product.price / daysOwned).toFixed(1);
+  const costPerDay = daysOwned ? (product.price / daysOwned).toFixed(1) : product.price.toFixed(1);
   const expectedCostPerDay = (product.price / (product.expectedLifespan * 365)).toFixed(1);
 
   return (
@@ -76,7 +75,9 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
           <div className="grid grid-cols-2 gap-4 pt-4">
             <div className="text-center p-3 bg-gray-50 rounded-lg">
               <p className="text-xs text-gray-500 mb-1">当前均值</p>
-              <p className="font-semibold">¥{costPerDay}/天</p>
+              <p className="font-semibold">
+                ¥{daysOwned === 1 ? product.price.toFixed(1) : costPerDay}/天
+              </p>
             </div>
             <div className="text-center p-3 bg-gray-50 rounded-lg">
               <p className="text-xs text-gray-500 mb-1">期待均值</p>
