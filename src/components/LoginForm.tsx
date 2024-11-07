@@ -92,6 +92,7 @@ function LoginForm() {
     setValidationErrors(prev => ({ ...prev, password: passwordError }));
   };
 
+
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newUsername = e.target.value;
     setUsername(newUsername);

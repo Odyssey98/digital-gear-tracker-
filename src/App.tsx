@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PenTool } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import ProductCard from './components/ProductCard';
@@ -12,8 +12,16 @@ function App() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const { products, addProduct, updateProduct, deleteProduct } = useProducts([]);
+  const { isDeviceAdded } = useDeviceInfo();
 
-  useDeviceInfo();
+  useEffect(() => {
+    if (isDeviceAdded) {
+      const timer = setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isDeviceAdded]);
 
   const handleAddProduct = (product: Product) => {
     addProduct(product);
