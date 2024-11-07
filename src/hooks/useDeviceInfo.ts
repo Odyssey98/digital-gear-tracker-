@@ -45,7 +45,7 @@ export function useDeviceInfo() {
 
       const finalDevice: Product = {
         ...deviceInfo,
-        price: 0,
+        price: 6666,
         expectedLifespan: 2,
         notes: '自动检测的设备',
         reasonToBuy: '必需品',

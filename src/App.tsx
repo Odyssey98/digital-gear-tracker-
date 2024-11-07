@@ -72,6 +72,8 @@ function App() {
         </div>
       </main>
 
+      
+
       <AddProductModal
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
