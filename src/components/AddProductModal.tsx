@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { Product, Currency, UsageStatus } from '../types';
+import { Product, UsageStatus } from '../types';
 import { useUser } from '../context/UserContext';  // 导入用户上下文
 import { getDeviceType } from '../hooks/useDeviceInfo';
 
@@ -26,7 +26,6 @@ const CATEGORY_OPTIONS = [
 const initialFormData = {
   ...getDeviceType(),  // 只预填设备类型相关信息
   price: '',
-  currency: 'CNY' as Currency,
   status: '在用' as UsageStatus,
   purchaseDate: new Date().toISOString().split('T')[0],
   expectedLifespan: '1',
@@ -70,7 +69,6 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
       category: formData.category,
       purpose: formData.purpose,
       price: parseFloat(formData.price) || 0,
-      currency: formData.currency,
       status: formData.status,
       purchase_date: formData.purchaseDate,  // 必需字段
       expected_lifespan: parseInt(formData.expectedLifespan) || 1,  // 必需字段
@@ -151,24 +149,15 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">价格</label>
-                <div className="flex max-w-[160px]">
-                  <select
-                    name="currency"
-                    className="px-2 py-2 border-r-0 rounded-l-lg bg-gray-50 w-16"
-                    value={formData.currency}
-                    onChange={handleInputChange}
-                  >
-                    <option value="CNY">¥</option>
-                    <option value="USD">$</option>
-                    <option value="EUR">€</option>
-                  </select>
+                <div className="relative">
+                  <span className="absolute left-3 top-2 text-gray-500">￥</span>
                   <input
                     type="number"
                     name="price"
                     required
                     min="0"
                     step="0.01"
-                    className={`w-full px-3 py-2 border-l-0 rounded-r-lg ${
+                    className={`w-full pl-8 pr-3 py-2 border rounded-lg ${
                       errors.price ? 'border-red-500' : ''
                     }`}
                     value={formData.price}

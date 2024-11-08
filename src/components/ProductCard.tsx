@@ -89,7 +89,7 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
 
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-500">价格</span>
-            <span className="font-medium">¥{product.price.toFixed(2)}</span>
+            <span className="font-medium">￥{product.price.toFixed(2)}</span>
           </div>
 
           <div className="flex items-center justify-between text-sm">
@@ -128,12 +128,12 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
             <div className="text-center p-3 bg-gray-50 rounded-lg">
               <p className="text-xs text-gray-500 mb-1">当前均值</p>
               <p className="font-semibold">
-                ¥{daysOwned === 1 ? product.price.toFixed(1) : costPerDay}/天
+                ￥{daysOwned === 1 ? product.price.toFixed(1) : costPerDay}/天
               </p>
             </div>
             <div className="text-center p-3 bg-gray-50 rounded-lg">
               <p className="text-xs text-gray-500 mb-1">期待均值</p>
-              <p className="font-semibold">¥{expectedCostPerDay}/天</p>
+              <p className="font-semibold">￥{expectedCostPerDay}/天</p>
             </div>
           </div>
 

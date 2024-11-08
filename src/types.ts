@@ -1,4 +1,4 @@
-export type Currency = 'CNY' | 'USD' | 'EUR';
+
 export type UsageStatus = '未开封' | '在用' | '闲置' | '已出售' | '已报废';
 
 export interface Product {
@@ -8,7 +8,6 @@ export interface Product {
   category: string;
   purpose: string;
   price: number;
-  currency: Currency;
   status: UsageStatus;
   purchase_date: string;
   expected_lifespan: number;

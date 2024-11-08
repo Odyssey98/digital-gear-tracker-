@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { Product, Currency, UsageStatus } from '../types';
+import { Product, UsageStatus } from '../types';
 
 interface EditProductModalProps {
   isOpen: boolean;
@@ -27,7 +27,6 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
     category: '',
     purpose: '',
     price: '',
-    currency: 'CNY' as Currency,
     status: '在用' as UsageStatus,
     purchaseDate: '',
     expectedLifespan: '',
@@ -42,7 +41,6 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
         category: product.category || '',
         purpose: product.purpose || '',
         price: product.price?.toString() || '',
-        currency: product.currency || 'CNY',
         status: product.status || '在用',
         purchaseDate: product.purchase_date || '',  
         expectedLifespan: product.expected_lifespan?.toString() || '',  
@@ -56,7 +54,6 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
         category: '',
         purpose: '',
         price: '',
-        currency: 'CNY',
         status: '在用',
         purchaseDate: '',
         expectedLifespan: '',
@@ -77,7 +74,6 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
       category: formData.category,
       purpose: formData.purpose,
       price: parseFloat(formData.price),
-      currency: formData.currency,
       status: formData.status,
       purchase_date: formData.purchaseDate,   
       expected_lifespan: parseInt(formData.expectedLifespan),  
@@ -90,8 +86,12 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
   if (!isOpen || !product) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+    <div 
+      className={`fixed inset-0 flex items-center justify-center p-4 z-50 transition-all duration-300 ease-out
+        ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
+    >
+      <div className="fixed inset-0 bg-black/50" onClick={onClose}></div>
+      <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto relative">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold">编辑产品</h2>
@@ -131,21 +131,13 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">价格</label>
-                <div className="flex max-w-[160px]">
-                  <select
-                    className="px-2 py-2 border-r-0 rounded-l-lg bg-gray-50 w-16"
-                    value={formData.currency}
-                    onChange={(e) => setFormData({ ...formData, currency: e.target.value as Currency })}
-                  >
-                    <option value="CNY">¥</option>
-                    <option value="USD">$</option>
-                    <option value="EUR">€</option>
-                  </select>
+                <div className="relative">
+                  <span className="absolute left-3 top-2 text-gray-500">￥</span>
                   <input
                     type="number"
                     required
                     step="0.01"
-                    className="w-full px-3 py-2 border-l-0 rounded-r-lg"
+                    className="w-full pl-8 pr-3 py-2 border rounded-lg"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                   />
