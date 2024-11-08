@@ -145,16 +145,17 @@ function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
         <div 
           ref={contentRef} 
           style={{
-            padding: window.innerWidth <= 768 ? '48px 36px' : '48px 64px',
+            padding: window.innerWidth <= 768 ? '48px 36px' : '64px',
             backgroundColor: '#F8FAFF',
-            width: window.innerWidth <= 768 ? '390px' : '800px',
+            width: window.innerWidth <= 768 ? '390px' : '1000px',
             visibility: 'visible',
-            position: 'relative'
+            position: 'relative',
+            borderRadius: window.innerWidth <= 768 ? '0' : '24px', // PC端添加圆角
           }}
         >
           {/* 头部区域 */}
-          <div className="mb-16">
-            <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 text-center">
+          <div className="mb-16 md:mb-20">
+            <h3 className="text-xl md:text-3xl font-bold text-gray-900 mb-3 text-center">
               数码消费追踪报告 📊
             </h3>
             <p className="text-sm md:text-base text-gray-500 text-center">
@@ -162,20 +163,20 @@ function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
             </p>
           </div>
 
-          {/* 数据概览 - PC端更大间距 */}
-          <div className="grid grid-cols-3 mb-20 md:gap-20">
-            <div className="text-center">
-              <p className="text-indigo-600 text-2xl md:text-3xl font-medium mb-1">{products.length}</p>
+          {/* 数据概览 - 优化PC端样式 */}
+          <div className="grid grid-cols-3 mb-20 md:mb-24">
+            <div className="text-center md:px-8">
+              <p className="text-indigo-600 text-2xl md:text-4xl font-medium mb-2">{products.length}</p>
               <p className="text-xs md:text-sm text-gray-500">我的装备</p>
             </div>
-            <div className="text-center">
-              <p className="text-indigo-600 text-2xl md:text-3xl font-medium mb-1">
+            <div className="text-center md:px-8 md:border-x border-gray-100">
+              <p className="text-indigo-600 text-2xl md:text-4xl font-medium mb-2">
                 ¥{calculateTotalValue().toLocaleString('zh-CN')}
               </p>
               <p className="text-xs md:text-sm text-gray-500">总值</p>
             </div>
-            <div className="text-center">
-              <p className="text-indigo-600 text-2xl md:text-3xl font-medium mb-1">
+            <div className="text-center md:px-8">
+              <p className="text-indigo-600 text-2xl md:text-4xl font-medium mb-2">
                 ¥{calculateAverageDailyCost()}
               </p>
               <p className="text-xs md:text-sm text-gray-500">日均投入</p>
@@ -184,14 +185,14 @@ function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
 
           {/* 装备列表标题 */}
           <div className="mb-6 md:mb-10">
-            <h4 className="text-base md:text-lg font-medium text-gray-900">我的装备清单</h4>
+            <h4 className="text-base md:text-xl font-medium text-gray-900">我的装备清单</h4>
             <p className="text-xs md:text-sm text-gray-500 mt-1">每一件都是精心之选</p>
           </div>
 
-          {/* 装备列表 - 移除PC端两列布局 */}
+          {/* 装备列表 - 优化PC端卡片样式 */}
           <div className="space-y-6 md:space-y-8">
             {products.map(product => (
-              <div key={product.id} className="bg-white/50 rounded-lg px-3 md:px-8 py-5 md:py-7">
+              <div key={product.id} className="bg-white/50 hover:bg-white/80 transition-colors rounded-xl px-3 md:px-8 py-5 md:py-6">
                 <div className="flex items-start md:items-center mb-4 md:mb-6">
                   <div className="bg-indigo-50 p-2 md:p-3 rounded-lg">
                     <div className="text-indigo-600 w-5 h-5 md:w-6 md:h-6">
@@ -203,23 +204,23 @@ function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
                     <p className="text-xs md:text-sm text-gray-500 mt-0.5">{product.category} · {product.status}</p>
                   </div>
                   
-                  {/* PC端显示所有信息在同一行 */}
-                  <div className="hidden md:flex items-center gap-12 ml-8">
-                    <div className="text-center">
-                      <p className="text-xs text-gray-500 mb-1">已使用</p>
+                  {/* PC端信息布局优化 */}
+                  <div className="hidden md:flex items-center divide-x divide-gray-100">
+                    <div className="text-center px-8">
+                      <p className="text-sm text-gray-500 mb-1">已使用</p>
                       <p className="font-medium">{getDaysOwned(product.purchase_date)}天</p>
                     </div>
-                    <div className="text-center">
-                      <p className="text-xs text-gray-500 mb-1">每日成本</p>
+                    <div className="text-center px-8">
+                      <p className="text-sm text-gray-500 mb-1">每日成本</p>
                       <p className="font-medium">¥{(product.price / getDaysOwned(product.purchase_date)).toFixed(2)}</p>
                     </div>
-                    <div className="text-center">
-                      <p className="text-xs text-gray-500 mb-1">预期使用</p>
+                    <div className="text-center px-8">
+                      <p className="text-sm text-gray-500 mb-1">预期使用</p>
                       <p className="font-medium">{product.expected_lifespan}年</p>
                     </div>
                   </div>
 
-                  <div className="text-right md:ml-8">
+                  <div className="text-right md:ml-8 md:pl-8 md:border-l border-gray-100">
                     <p className="text-lg md:text-xl font-medium text-indigo-600">¥{product.price}</p>
                     <p className="text-xs md:text-sm text-gray-500">
                       {product.price >= 10000 ? '买都买了 💸' : 
@@ -229,21 +230,29 @@ function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
                     </p>
                   </div>
                 </div>
-                
-                {/* 添加进度条 */}
-                <div className="mb-4 md:mb-6">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs text-gray-500">使用进度</span>
+
+                {/* 进度条样式优化 - 只调整间距 */}
+                <div className="mb-4 md:mb-0 mt-8 md:mt-10">
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs md:text-sm text-gray-500">使用进度</span>
+                      {(() => {
+                        const { progress } = calculateProgress(product.purchase_date, product.expected_lifespan);
+                        return (
+                          <span className="text-xs md:text-sm font-medium text-gray-900">{progress}%</span>
+                        );
+                      })()}
+                    </div>
                     {(() => {
-                      const { progress, message } = calculateProgress(product.purchase_date, product.expected_lifespan);
+                      const { message } = calculateProgress(product.purchase_date, product.expected_lifespan);
                       return (
-                        <span className="text-xs text-gray-500">{progress}% - {message}</span>
+                        <span className="text-xs md:text-sm text-gray-500">{message}</span>
                       );
                     })()}
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-1.5">
+                  <div className="w-full bg-gray-100 rounded-full h-1.5 md:h-2">
                     <div
-                      className={`h-1.5 rounded-full transition-all duration-500 ${
+                      className={`h-1.5 md:h-2 rounded-full transition-all duration-500 ${
                         (() => {
                           const { progress } = calculateProgress(product.purchase_date, product.expected_lifespan);
                           return progress >= 80 ? 'bg-red-500' : 
@@ -255,22 +264,6 @@ function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
                         width: `${calculateProgress(product.purchase_date, product.expected_lifespan).progress}%` 
                       }}
                     ></div>
-                  </div>
-                </div>
-
-                {/* 移动端显示详细信息 */}
-                <div className="grid grid-cols-3 gap-4 md:hidden text-sm">
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">已使用</p>
-                    <p className="font-medium">{getDaysOwned(product.purchase_date)}天</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">每日成本</p>
-                    <p className="font-medium">¥{(product.price / getDaysOwned(product.purchase_date)).toFixed(2)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 mb-1">预期使用</p>
-                    <p className="font-medium">{product.expected_lifespan}年</p>
                   </div>
                 </div>
               </div>
