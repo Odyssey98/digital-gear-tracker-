@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PenTool, LogOut } from 'lucide-react';
+import { PenTool, LogOut, Share2 } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import ProductCard from './ProductCard';
 import AddProductModal from './AddProductModal';
@@ -9,12 +9,14 @@ import Statistics from './Statistics';
 import { Product } from '../types';
 import { useProducts } from '../hooks/useProducts';
 import { useUser } from '../context/UserContext';
+import ShareModal from './ShareModal';
 
 function AppContent() {
   const { user, logout } = useUser();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const { products, loading, addProduct, updateProduct, deleteProduct } = useProducts();
+  const [showShareModal, setShowShareModal] = useState(false);
 
   if (!user) {
     return <LoginModal />;
@@ -40,29 +42,50 @@ function AppContent() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <Toaster position="top-right" />
       <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-3">
-              <PenTool className="h-8 w-8 text-indigo-600" />
-              <h1 className="text-2xl font-bold text-gray-900">用时宝</h1>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="flex flex-col space-y-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-3">
+                <PenTool className="h-7 w-7 sm:h-8 sm:w-8 text-indigo-600" />
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">用时宝</h1>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={logout}
+                  className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
+                  title="退出登录"
+                >
+                  <LogOut className="h-5 w-5" />
+                </button>
+              </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">
-                {user?.name}
-              </span>
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
-              >
-                添加产品
-              </button>
-              <button
-                onClick={logout}
-                className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
-                title="退出登录"
-              >
-                <LogOut className="h-5 w-5" />
-              </button>
+
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-t pt-4 space-y-4 sm:space-y-0">
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                <span className="text-lg text-gray-700">
+                  Hi, <span className="font-medium text-indigo-600">{user?.name}</span>
+                </span>
+                <span className="text-sm text-gray-500 hidden sm:inline">
+                  今天也要好好管理你的数码装备哦 ✨
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <button
+                  onClick={() => setShowAddModal(true)}
+                  className="flex-1 sm:flex-none px-4 py-2 bg-indigo-600 text-white text-sm sm:text-base rounded-lg hover:bg-indigo-700 transition-colors"
+                >
+                  添加产品
+                </button>
+                <button
+                  onClick={() => setShowShareModal(true)}
+                  className="flex-1 sm:flex-none px-4 py-2 border border-gray-200 text-gray-600 text-sm sm:text-base rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2"
+                  title="分享我的设备"
+                >
+                  <Share2 className="h-4 w-4" />
+                  <span>分享</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -131,6 +154,12 @@ function AppContent() {
           product={editingProduct}
         />
       )}
+
+      <ShareModal 
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        products={products}
+      />
     </div>
   );
 }
