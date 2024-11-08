@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Product, Currency, UsageStatus } from '../types';
 import { useUser } from '../context/UserContext';  // 导入用户上下文
+import { getDeviceType } from '../hooks/useDeviceInfo';
 
 interface AddProductModalProps {
   isOpen: boolean;
@@ -23,13 +24,11 @@ const CATEGORY_OPTIONS = [
 
 // 预设值和类型
 const initialFormData = {
-  name: '',
-  category: '',
-  purpose: '',
+  ...getDeviceType(),  // 只预填设备类型相关信息
   price: '',
   currency: 'CNY' as Currency,
   status: '在用' as UsageStatus,
-  purchaseDate: new Date().toISOString().split('T')[0], // 确保默认日期格式正确
+  purchaseDate: new Date().toISOString().split('T')[0],
   expectedLifespan: '1',
   notes: '',
   reasonToBuy: '',
@@ -240,27 +239,33 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
 
             {/* 备注信息组 */}
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">备注</label>
-                <textarea
-                  name="notes"
-                  className="w-full px-3 py-2 border rounded-lg"
-                  rows={2}
-                  value={formData.notes}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">购买原因</label>
-                <textarea
-                  name="reasonToBuy"
-                  className="w-full px-3 py-2 border rounded-lg"
-                  rows={2}
-                  value={formData.reasonToBuy}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      备注 <span className="text-gray-400 text-xs">(选填)</span>
+    </label>
+    <textarea
+      name="notes"
+      className="w-full px-3 py-2 border rounded-lg"
+      rows={2}
+      value={formData.notes}
+      onChange={handleInputChange}
+      placeholder="添加一些备注信息..."
+    />
+  </div>
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+      购买原因 <span className="text-gray-400 text-xs">(选填)</span>
+    </label>
+    <textarea
+      name="reasonToBuy"
+      className="w-full px-3 py-2 border rounded-lg"
+      rows={2}
+      value={formData.reasonToBuy}
+      onChange={handleInputChange}
+      placeholder="记录一下为什么要买..."
+    />
+  </div>
+</div>
 
             <button
               type="submit"

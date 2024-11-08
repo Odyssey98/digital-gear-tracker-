@@ -9,14 +9,12 @@ import Statistics from './Statistics';
 import { Product } from '../types';
 import { useProducts } from '../hooks/useProducts';
 import { useUser } from '../context/UserContext';
-import { useDeviceInfo } from '../hooks/useDeviceInfo';
 
 function AppContent() {
   const { user, logout } = useUser();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const { products, loading, addProduct, updateProduct, deleteProduct } = useProducts();
-  useDeviceInfo();
 
   if (!user) {
     return <LoginModal />;
@@ -75,6 +73,35 @@ function AppContent() {
         {loading ? (
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+          </div>
+        ) : products.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="max-w-md mx-auto">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                👋 欢迎使用用时宝
+              </h3>
+              <p className="text-gray-600 mb-6">
+                开始记录你的第一个设备吧！建议从正在使用的手机或电脑开始。
+              </p>
+              <div className="space-y-4">
+                <button
+                  onClick={() => setShowAddModal(true)}
+                  className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors inline-flex items-center space-x-2"
+                >
+                  <span>添加我的第一个设备</span>
+                  <span className="text-xl">→</span>
+                </button>
+                <div className="text-sm text-gray-500">
+                  <p>记录设备信息可以帮助你：</p>
+                  <ul className="mt-2 space-y-1">
+                    <li>• 计算设备的每日使用成本</li>
+                    <li>• 追踪设备的使用寿命</li>
+                    <li>• 避免冲动消费</li>
+                    <li>• 合理规划更换时间</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
