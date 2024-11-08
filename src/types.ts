@@ -11,7 +11,6 @@ export interface Product {
   status: UsageStatus;
   purchaseDate: string;
   expectedLifespan: number;
-  usageProgress: number;
   notes?: string;
   reasonToBuy?: string;
   tags?: string[];

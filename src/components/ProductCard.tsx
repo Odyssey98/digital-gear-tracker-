@@ -19,6 +19,29 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
   const costPerDay = daysOwned ? (product.price / daysOwned).toFixed(1) : product.price.toFixed(1);
   const expectedCostPerDay = (product.price / (product.expectedLifespan * 365)).toFixed(1);
 
+  const calculateProgress = (purchaseDate: string, expectedLifespan: number) => {
+    const startDate = new Date(purchaseDate);
+    const today = new Date();
+    const totalDays = expectedLifespan * 365;
+    const usedDays = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+    const progress = Math.min(100, Math.round((usedDays / totalDays) * 100));
+    
+    return {
+      progress,
+      message: getProgressMessage(progress)
+    };
+  };
+
+  const getProgressMessage = (progress: number) => {
+    if (progress >= 100) return '已超出预期使用时间';
+    if (progress >= 80) return '接近预期使用期限';
+    if (progress >= 50) return '使用过半';
+    if (progress >= 20) return '使用良好';
+    return '刚开始使用';
+  };
+
+  const { progress, message } = calculateProgress(product.purchaseDate, product.expectedLifespan);
+
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <div className="p-6">
@@ -62,12 +85,16 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
           <div className="pt-4 border-t">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-gray-500">使用进度</span>
-              <span className="text-sm font-medium">{product.usageProgress}%</span>
+              <span className="text-sm font-medium">{progress}% - {message}</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div
-                className="bg-indigo-600 h-2 rounded-full"
-                style={{ width: `${product.usageProgress}%` }}
+                className={`h-2 rounded-full transition-all duration-500 ${
+                  progress >= 80 ? 'bg-red-500' : 
+                  progress >= 50 ? 'bg-yellow-500' : 
+                  'bg-green-500'
+                }`}
+                style={{ width: `${progress}%` }}
               ></div>
             </div>
           </div>

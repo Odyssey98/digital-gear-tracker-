@@ -7,6 +7,7 @@ import EditProductModal from './components/EditProductModal';
 import { Product } from './types';
 import { useProducts } from './hooks/useProducts';
 import { useDeviceInfo } from './hooks/useDeviceInfo';
+import Statistics from './components/Statistics';
 
 function App() {
   const [showAddModal, setShowAddModal] = useState(false);
@@ -60,6 +61,7 @@ function App() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Statistics products={products} />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => (
             <ProductCard 

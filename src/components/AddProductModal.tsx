@@ -32,7 +32,6 @@ const initialFormData = {
   expectedLifespan: '1',  // 默认1年
   notes: '',
   reasonToBuy: '',
-  usageProgress: '0',
 };
 
 function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
@@ -65,7 +64,6 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
       ...formData,
       price: parseFloat(formData.price) || 0,
       expectedLifespan: parseInt(formData.expectedLifespan) || 1,
-      usageProgress: parseInt(formData.usageProgress) || 0,
       tags
     });
     setFormData(initialFormData);
@@ -204,37 +202,17 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">使用进度 (%)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">预期使用年限</label>
                 <input
                   type="number"
-                  name="usageProgress"
+                  name="expectedLifespan"
                   required
-                  min="0"
-                  max="100"
+                  min="1"
                   className="w-full px-3 py-2 border rounded-lg"
-                  value={formData.usageProgress}
+                  value={formData.expectedLifespan}
                   onChange={handleInputChange}
                 />
               </div>
-            </div>
-
-            {/* 使用年限 */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">预期使用年限</label>
-              <input
-                type="number"
-                name="expectedLifespan"
-                required
-                min="1"
-                className={`w-full px-3 py-2 border rounded-lg ${
-                  errors.expectedLifespan ? 'border-red-500' : ''
-                }`}
-                value={formData.expectedLifespan}
-                onChange={handleInputChange}
-              />
-              {errors.expectedLifespan && (
-                <p className="text-red-500 text-sm mt-1">{errors.expectedLifespan}</p>
-              )}
             </div>
 
             {/* 用途 */}

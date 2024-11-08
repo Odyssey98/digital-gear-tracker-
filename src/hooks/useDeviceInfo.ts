@@ -15,7 +15,6 @@ export function useDeviceInfo() {
       let deviceInfo: Partial<Product> = {
         id: Date.now().toString(),
         purchaseDate: new Date().toISOString().split('T')[0],
-        usageProgress: 0,
         category: '其他',
       };
 

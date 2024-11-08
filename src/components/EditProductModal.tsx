@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { Product } from '../types';
+import { Product, Currency, UsageStatus } from '../types';
 
 interface EditProductModalProps {
   isOpen: boolean;
@@ -9,17 +9,30 @@ interface EditProductModalProps {
   product: Product | null;
 }
 
+// 预设的类别选项
+const CATEGORY_OPTIONS = [
+  '手机',
+  '电脑',
+  '平板',
+  '耳机',
+  '相机',
+  '智能手表',
+  '游戏机',
+  '其他'
+];
+
 function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     category: '',
     purpose: '',
     price: '',
+    currency: 'CNY' as Currency,
+    status: '在用' as UsageStatus,
     purchaseDate: '',
     expectedLifespan: '',
     notes: '',
     reasonToBuy: '',
-    usageProgress: '0',
   });
 
   useEffect(() => {
@@ -29,11 +42,12 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
         category: product.category,
         purpose: product.purpose,
         price: product.price.toString(),
+        currency: product.currency || 'CNY',
+        status: product.status || '在用',
         purchaseDate: product.purchaseDate,
         expectedLifespan: product.expectedLifespan.toString(),
-        notes: product.notes,
-        reasonToBuy: product.reasonToBuy,
-        usageProgress: product.usageProgress.toString(),
+        notes: product.notes || '',
+        reasonToBuy: product.reasonToBuy || '',
       });
     }
   }, [product]);
@@ -43,11 +57,10 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
     if (!product) return;
     
     onEdit({
-      id: product.id,
+      ...product, // 保留原有的其他属性
       ...formData,
       price: parseFloat(formData.price),
       expectedLifespan: parseInt(formData.expectedLifespan),
-      usageProgress: parseInt(formData.usageProgress),
     });
     onClose();
   };
@@ -66,84 +79,95 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">产品名称</label>
-              <input
-                type="text"
-                required
-                className="w-full px-3 py-2 border rounded-lg"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">产品名称</label>
+                <input
+                  type="text"
+                  required
+                  className="w-full px-3 py-2 border rounded-lg"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">类别</label>
+                <select
+                  required
+                  className="w-full px-3 py-2 border rounded-lg bg-white"
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                >
+                  <option value="">请选择类别</option>
+                  {CATEGORY_OPTIONS.map(option => (
+                    <option key={option} value={option}>{option}</option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">类别</label>
-              <input
-                type="text"
-                required
-                className="w-full px-3 py-2 border rounded-lg"
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">价格</label>
+                <div className="flex">
+                  <select
+                    className="px-2 py-2 border-r-0 rounded-l-lg bg-gray-50"
+                    value={formData.currency}
+                    onChange={(e) => setFormData({ ...formData, currency: e.target.value as Currency })}
+                  >
+                    <option value="CNY">¥</option>
+                    <option value="USD">$</option>
+                    <option value="EUR">€</option>
+                  </select>
+                  <input
+                    type="number"
+                    required
+                    step="0.01"
+                    className="flex-1 px-3 py-2 border-l-0 rounded-r-lg"
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">使用状态</label>
+                <select
+                  required
+                  className="w-full px-3 py-2 border rounded-lg bg-white"
+                  value={formData.status}
+                  onChange={(e) => setFormData({ ...formData, status: e.target.value as UsageStatus })}
+                >
+                  <option value="未开封">未开封</option>
+                  <option value="在用">在用</option>
+                  <option value="闲置">闲置</option>
+                  <option value="已出售">已出售</option>
+                  <option value="已报废">已报废</option>
+                </select>
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">用途</label>
-              <input
-                type="text"
-                required
-                className="w-full px-3 py-2 border rounded-lg"
-                value={formData.purpose}
-                onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">价格</label>
-              <input
-                type="number"
-                required
-                step="0.01"
-                className="w-full px-3 py-2 border rounded-lg"
-                value={formData.price}
-                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">购买日期</label>
-              <input
-                type="date"
-                required
-                className="w-full px-3 py-2 border rounded-lg"
-                value={formData.purchaseDate}
-                onChange={(e) => setFormData({ ...formData, purchaseDate: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">预期使用年限</label>
-              <input
-                type="number"
-                required
-                className="w-full px-3 py-2 border rounded-lg"
-                value={formData.expectedLifespan}
-                onChange={(e) => setFormData({ ...formData, expectedLifespan: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">使用进度 (%)</label>
-              <input
-                type="number"
-                required
-                min="0"
-                max="100"
-                className="w-full px-3 py-2 border rounded-lg"
-                value={formData.usageProgress}
-                onChange={(e) => setFormData({ ...formData, usageProgress: e.target.value })}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">购买日期</label>
+                <input
+                  type="date"
+                  required
+                  className="w-full px-3 py-2 border rounded-lg"
+                  value={formData.purchaseDate}
+                  onChange={(e) => setFormData({ ...formData, purchaseDate: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">预期使用年限</label>
+                <input
+                  type="number"
+                  required
+                  min="1"
+                  className="w-full px-3 py-2 border rounded-lg"
+                  value={formData.expectedLifespan}
+                  onChange={(e) => setFormData({ ...formData, expectedLifespan: e.target.value })}
+                />
+              </div>
             </div>
 
             <div>
