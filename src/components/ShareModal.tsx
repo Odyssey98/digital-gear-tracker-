@@ -220,18 +220,18 @@ function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
                 </div>
 
                 {/* 移动端详细信息 */}
-                <div className="md:hidden grid grid-cols-3 gap-4 mb-6">
-                  <div className="text-center">
-                    <p className="text-xs text-gray-500 mb-1">已使用</p>
-                    <p className="font-medium text-sm">{getDaysOwned(product.purchase_date)}天</p>
+                <div className="md:hidden grid grid-cols-3 gap-2 mb-6 mx-[-12px] px-3">
+                  <div className="text-center p-3 bg-gray-50/50 rounded-lg">
+                    <p className="text-xs text-gray-500 mb-2">已使用</p>
+                    <p className="font-medium text-base">{getDaysOwned(product.purchase_date)}天</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-xs text-gray-500 mb-1">每日成本</p>
-                    <p className="font-medium text-sm">¥{(product.price / getDaysOwned(product.purchase_date)).toFixed(2)}</p>
+                  <div className="text-center p-3 bg-gray-50/50 rounded-lg">
+                    <p className="text-xs text-gray-500 mb-2">每日成本</p>
+                    <p className="font-medium text-base">¥{(product.price / getDaysOwned(product.purchase_date)).toFixed(2)}</p>
                   </div>
-                  <div className="text-center">
-                    <p className="text-xs text-gray-500 mb-1">预期使用</p>
-                    <p className="font-medium text-sm">{product.expected_lifespan}年</p>
+                  <div className="text-center p-3 bg-gray-50/50 rounded-lg">
+                    <p className="text-xs text-gray-500 mb-2">预期使用</p>
+                    <p className="font-medium text-base">{product.expected_lifespan}年</p>
                   </div>
                 </div>
 
