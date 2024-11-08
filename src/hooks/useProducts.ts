@@ -1,51 +1,117 @@
-
-import { toast } from 'react-hot-toast';
+import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
+import { useUser } from '../context/UserContext';
 import { Product } from '../types';
-import { useLocalStorage } from './useLocalStorage';
 
-export function useProducts(initialProducts: Product[] = []) {
-  const [products, setProducts] = useLocalStorage<Product[]>('products', initialProducts);
+export function useProducts() {
+  const { user } = useUser();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const addProduct = async (product: Product) => {
+  // 加载产品
+  useEffect(() => {
+    if (user) {
+      loadProducts();
+    }
+  }, [user]);
+
+  const loadProducts = async () => {
     try {
-      const newProduct = {
-        ...product,
-        id: Date.now().toString(),
-      };
-      setProducts(prev => [...prev, newProduct]);
-      toast.success('产品添加成功');
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('user_id', user?.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setProducts(data || []);
     } catch (error) {
-      toast.error('添加产品失败');
-      console.error('Error adding product:', error);
+      console.error('Error loading products:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const updateProduct = async (updatedProduct: Product) => {
+  const addProduct = async (product: Omit<Product, 'id' | 'user_id'>) => {
     try {
-      setProducts(prev => 
-        prev.map(p => p.id === updatedProduct.id ? updatedProduct : p)
-      );
-      toast.success('产品更新成功');
+      if (!user?.id) throw new Error('User ID is required');
+      
+      const newProduct = {
+        name: product.name,
+        category: product.category,
+        purpose: product.purpose,
+        price: product.price,
+        currency: product.currency,
+        status: product.status,
+        notes: product.notes,
+        id: crypto.randomUUID(),
+        user_id: user.id,
+        created_at: new Date().toISOString(),
+        purchase_date: product.purchaseDate,
+        expected_lifespan: product.expectedLifespan
+      };
+
+      const { error } = await supabase
+        .from('products')
+        .insert(newProduct);
+
+      if (error) throw error;
+      
+      const frontendProduct = {
+        ...newProduct,
+        purchaseDate: newProduct.purchase_date,
+        expectedLifespan: newProduct.expected_lifespan,
+        purchase_date: undefined,
+        expected_lifespan: undefined
+      };
+      
+      setProducts(prev => [frontendProduct, ...prev]);
     } catch (error) {
-      toast.error('更新产品失败');
+      console.error('Error adding product:', error);
+      throw error;
+    }
+  };
+
+  const updateProduct = async (product: Product) => {
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update(product)
+        .eq('id', product.id)
+        .eq('user_id', user?.id);
+
+      if (error) throw error;
+      setProducts(prev => 
+        prev.map(p => p.id === product.id ? product : p)
+      );
+    } catch (error) {
       console.error('Error updating product:', error);
+      throw error;
     }
   };
 
   const deleteProduct = async (productId: string) => {
     try {
+      const { error } = await supabase
+        .from('products')
+        .delete()
+        .eq('id', productId)
+        .eq('user_id', user?.id);
+
+      if (error) throw error;
       setProducts(prev => prev.filter(p => p.id !== productId));
-      toast.success('产品删除成功');
     } catch (error) {
-      toast.error('删除产品失败');
       console.error('Error deleting product:', error);
+      throw error;
     }
   };
 
-  return {
-    products,
-    addProduct,
-    updateProduct,
-    deleteProduct,
+  return { 
+    products, 
+    loading, 
+    addProduct, 
+    updateProduct, 
+    deleteProduct 
   };
 }

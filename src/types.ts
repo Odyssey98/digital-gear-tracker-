@@ -3,6 +3,7 @@ export type UsageStatus = '未开封' | '在用' | '闲置' | '已出售' | '已
 
 export interface Product {
   id: string;
+  user_id: string;
   name: string;
   category: string;
   purpose: string;
@@ -14,11 +15,17 @@ export interface Product {
   notes?: string;
   reasonToBuy?: string;
   tags?: string[];
+  created_at?: string;
+}
+
+export interface DBProduct extends Omit<Product, 'purchaseDate' | 'expectedLifespan'> {
+  purchase_date: string;
+  expected_lifespan: number;
 }
 
 export interface User {
   id: string;
-  username: string;
+  name: string;
   products?: Product[];
 }
 
