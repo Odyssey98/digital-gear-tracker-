@@ -16,7 +16,7 @@ function AppContent() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const { products, loading, addProduct, updateProduct, deleteProduct } = useProducts();
- useDeviceInfo();
+  useDeviceInfo();
 
   if (!user) {
     return <LoginModal />;

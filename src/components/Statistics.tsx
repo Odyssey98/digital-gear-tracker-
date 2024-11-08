@@ -10,7 +10,7 @@ function Statistics({ products }: StatisticsProps) {
   const averagePrice = productCount > 0 ? totalPrice / productCount : 0;
   const totalDailyCost = products.reduce((sum, product) => {
     const daysOwned = Math.max(1, Math.floor(
-      (new Date().getTime() - new Date(product.purchaseDate).getTime()) / (1000 * 60 * 60 * 24)
+      (new Date().getTime() - new Date(product.purchase_date).getTime()) / (1000 * 60 * 60 * 24)
     ));
     return sum + (product.price / daysOwned);
   }, 0);
