@@ -39,6 +39,11 @@ interface ShareModalProps {
   products: Product[];
 }
 
+// 添加微信环境检测
+const isWeixinBrowser = () => {
+  return /MicroMessenger/i.test(navigator.userAgent);
+};
+
 function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -53,16 +58,41 @@ function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
     return (totalCost / totalDays).toFixed(2);
   };
 
+  // 修改生成图片函数
   const generateImage = async () => {
     if (contentRef.current) {
       try {
-        const canvas = await html2canvas(contentRef.current);
-        const image = canvas.toDataURL('image/png');
-        
-        const link = document.createElement('a');
-        link.download = '我的设备清单.png';
-        link.href = image;
-        link.click();
+        const scale = window.devicePixelRatio;
+        const canvas = await html2canvas(contentRef.current, {
+          scale: scale,
+          useCORS: true,
+          logging: false,
+          backgroundColor: null,
+          imageTimeout: 0
+        });
+
+        const image = canvas.toDataURL('image/png', 1.0);
+
+        if (isWeixinBrowser()) {
+          // 微信环境下，显示图片预览
+          const img = document.createElement('div');
+          img.innerHTML = `
+            <div class="fixed inset-0 bg-black/90 z-[60] flex flex-col items-center justify-center">
+              <img src="${image}" class="max-w-full max-h-[80vh] px-4" />
+              <p class="text-white text-sm mt-4">长按图片保存</p>
+              <button class="mt-4 px-6 py-2 bg-white/20 rounded-full text-white text-sm" onclick="this.parentElement.remove()">
+                关闭预览
+              </button>
+            </div>
+          `;
+          document.body.appendChild(img.firstChild as Node);
+        } else {
+          // 非微信环境，直接下载
+          const link = document.createElement('a');
+          link.download = '我的数码清单.png';
+          link.href = image;
+          link.click();
+        }
       } catch (error) {
         console.error('生成图片失败:', error);
       }
