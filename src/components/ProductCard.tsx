@@ -42,6 +42,16 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
 
   const { progress, message } = calculateProgress(product.purchase_date, product.expected_lifespan);
 
+  // 格式化日期的辅助函数
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('zh-CN', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <div className="p-6">
@@ -82,6 +92,21 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
             <span className="font-medium">¥{product.price.toFixed(2)}</span>
           </div>
 
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-500">购买日期</span>
+            <span className="font-medium">{formatDate(product.purchase_date)}</span>
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-500">预期使用</span>
+            <span className="font-medium">{product.expected_lifespan} 年</span>
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-500">拥有天数</span>
+            <span className="font-medium">{daysOwned}天</span>
+          </div>
+
           <div className="pt-4 border-t">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm text-gray-500">使用进度</span>
@@ -110,11 +135,6 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
               <p className="text-xs text-gray-500 mb-1">期待均值</p>
               <p className="font-semibold">¥{expectedCostPerDay}/天</p>
             </div>
-          </div>
-
-          <div className="flex items-center justify-between text-sm pt-4">
-            <span className="text-gray-500">拥有天数</span>
-            <span className="font-medium">{daysOwned}天</span>
           </div>
 
           {(product.notes || product.reason_to_buy) && (
