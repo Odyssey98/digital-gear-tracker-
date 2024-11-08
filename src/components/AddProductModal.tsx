@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import { Product, Currency, UsageStatus } from '../types';
+import { useUser } from '../context/UserContext';  // 导入用户上下文
 
 interface AddProductModalProps {
   isOpen: boolean;
@@ -37,8 +38,7 @@ const initialFormData = {
 function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [tags, setTags] = useState<string[]>([]);
-  const [tagInput, setTagInput] = useState('');
+  const { user } = useUser();  // 获取当前用户信息
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -57,17 +57,25 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateForm() || !user) return;
     
     onAdd({
       id: Date.now().toString(),
-      ...formData,
+      user_id: user.id,
+      name: formData.name,
+      category: formData.category,
+      purpose: formData.purpose,
       price: parseFloat(formData.price) || 0,
-      expectedLifespan: parseInt(formData.expectedLifespan) || 1,
-      tags
+      currency: formData.currency,
+      status: formData.status,
+      purchase_date: formData.purchaseDate,
+      expected_lifespan: parseInt(formData.expectedLifespan) || 1,
+      notes: formData.notes || '',
+      reason_to_buy: formData.reasonToBuy || '',
+      created_at: new Date().toISOString(),
     });
+    
     setFormData(initialFormData);
-    setTags([]);
     onClose();
   };
 
@@ -79,14 +87,6 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
     // 清除对应字段的错误
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
-    }
-  };
-
-  const handleAddTag = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && tagInput.trim()) {
-      e.preventDefault();
-      setTags(prev => [...new Set([...prev, tagInput.trim()])]);
-      setTagInput('');
     }
   };
 
@@ -226,38 +226,6 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
                 value={formData.purpose}
                 onChange={handleInputChange}
               />
-            </div>
-
-            {/* 标签 */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">标签</label>
-              <div className="space-y-2">
-                <input
-                  type="text"
-                  value={tagInput}
-                  onChange={e => setTagInput(e.target.value)}
-                  onKeyDown={handleAddTag}
-                  placeholder="输入标签后按回车添加"
-                  className="w-full px-3 py-2 border rounded-lg"
-                />
-                <div className="flex flex-wrap gap-2">
-                  {tags.map(tag => (
-                    <span
-                      key={tag}
-                      className="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm"
-                    >
-                      {tag}
-                      <button
-                        type="button"
-                        onClick={() => setTags(prev => prev.filter(t => t !== tag))}
-                        className="ml-1 text-indigo-600 hover:text-indigo-800"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              </div>
             </div>
 
             {/* 备注信息组 */}

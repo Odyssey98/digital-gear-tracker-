@@ -15,9 +15,9 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
     return Math.max(1, Math.floor(diff / (1000 * 60 * 60 * 24)));
   };
 
-  const daysOwned = getDaysOwned(product.purchaseDate);
+  const daysOwned = getDaysOwned(product.purchase_date);
   const costPerDay = daysOwned ? (product.price / daysOwned).toFixed(1) : product.price.toFixed(1);
-  const expectedCostPerDay = (product.price / (product.expectedLifespan * 365)).toFixed(1);
+  const expectedCostPerDay = (product.price / (product.expected_lifespan * 365)).toFixed(1);
 
   const calculateProgress = (purchaseDate: string, expectedLifespan: number) => {
     const startDate = new Date(purchaseDate);
@@ -40,7 +40,7 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
     return '刚开始使用';
   };
 
-  const { progress, message } = calculateProgress(product.purchaseDate, product.expectedLifespan);
+  const { progress, message } = calculateProgress(product.purchase_date, product.expected_lifespan);
 
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
@@ -117,7 +117,7 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
             <span className="font-medium">{daysOwned}天</span>
           </div>
 
-          {(product.notes || product.reasonToBuy) && (
+          {(product.notes || product.reason_to_buy) && (
             <div className="pt-4 border-t space-y-3">
               {product.notes && (
                 <div>
@@ -125,10 +125,10 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
                   <p className="text-sm">{product.notes}</p>
                 </div>
               )}
-              {product.reasonToBuy && (
+              {product.reason_to_buy && (
                 <div>
                   <p className="text-sm text-gray-500 mb-1">购买原因</p>
-                  <p className="text-sm">{product.reasonToBuy}</p>
+                  <p className="text-sm">{product.reason_to_buy}</p>
                 </div>
               )}
             </div>
