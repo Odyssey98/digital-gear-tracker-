@@ -33,40 +33,41 @@ export function useProducts() {
     }
   };
 
-  const addProduct = async (product: Omit<Product, 'id' | 'user_id'>) => {
+  const addProduct = async (product: Omit<Product, 'id' | 'user_id' | 'created_at'>) => {
     try {
       if (!user?.id) throw new Error('User ID is required');
       
-      const newProduct = {
+      const dbProduct = {
+        id: crypto.randomUUID(),
+        user_id: user.id,
         name: product.name,
         category: product.category,
         purpose: product.purpose,
         price: product.price,
         currency: product.currency,
         status: product.status,
-        notes: product.notes,
-        id: crypto.randomUUID(),
-        user_id: user.id,
+        purchase_date: product.purchase_date,
+        expected_lifespan: product.expected_lifespan,
+        notes: product.notes || '',
+        reason_to_buy: product.reason_to_buy || '',
         created_at: new Date().toISOString(),
-        purchase_date: product.purchaseDate,
-        expected_lifespan: product.expectedLifespan
       };
-
+      
       const { error } = await supabase
         .from('products')
-        .insert(newProduct);
+        .insert(dbProduct);
 
       if (error) throw error;
       
       const frontendProduct = {
-        ...newProduct,
-        purchaseDate: newProduct.purchase_date,
-        expectedLifespan: newProduct.expected_lifespan,
-        purchase_date: undefined,
-        expected_lifespan: undefined
+        ...dbProduct,
+        purchaseDate: dbProduct.purchase_date,
+        expectedLifespan: dbProduct.expected_lifespan,
+        reasonToBuy: dbProduct.reason_to_buy,
       };
       
       setProducts(prev => [frontendProduct, ...prev]);
+      return frontendProduct;
     } catch (error) {
       console.error('Error adding product:', error);
       throw error;

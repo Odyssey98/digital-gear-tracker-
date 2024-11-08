@@ -29,8 +29,8 @@ const initialFormData = {
   price: '',
   currency: 'CNY' as Currency,
   status: '在用' as UsageStatus,
-  purchaseDate: new Date().toISOString().split('T')[0], // 默认今天
-  expectedLifespan: '1',  // 默认1年
+  purchaseDate: new Date().toISOString().split('T')[0], // 确保默认日期格式正确
+  expectedLifespan: '1',
   notes: '',
   reasonToBuy: '',
 };
@@ -51,6 +51,10 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
       newErrors.expectedLifespan = '预期使用年限必须大于0';
     }
     
+    if (!formData.purchaseDate) {
+      newErrors.purchaseDate = '请选择购买日期';
+    }
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -59,7 +63,8 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
     e.preventDefault();
     if (!validateForm() || !user) return;
     
-    onAdd({
+    // 确保所有必需字段都包含在提交数据中
+    const newProduct = {
       id: Date.now().toString(),
       user_id: user.id,
       name: formData.name,
@@ -68,13 +73,18 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
       price: parseFloat(formData.price) || 0,
       currency: formData.currency,
       status: formData.status,
-      purchase_date: formData.purchaseDate,
-      expected_lifespan: parseInt(formData.expectedLifespan) || 1,
+      purchase_date: formData.purchaseDate,  // 必需字段
+      expected_lifespan: parseInt(formData.expectedLifespan) || 1,  // 必需字段
       notes: formData.notes || '',
       reason_to_buy: formData.reasonToBuy || '',
       created_at: new Date().toISOString(),
-    });
+    };
+  
+    // 调试日志
+    console.log('Form data:', formData);
+    console.log('New product:', newProduct);
     
+    onAdd(newProduct);
     setFormData(initialFormData);
     onClose();
   };
@@ -174,10 +184,10 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
                 <label className="block text-sm font-medium text-gray-700 mb-1">购买日期</label>
                 <input
                   type="date"
-                  name="purchaseDate"
+                  name="purchaseDate" 
                   required
                   className="w-full px-3 py-2 border rounded-lg"
-                  value={formData.purchaseDate}
+                  value={formData.purchaseDate}  
                   onChange={handleInputChange}
                 />
               </div>
