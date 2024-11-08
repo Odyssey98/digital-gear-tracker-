@@ -1,6 +1,5 @@
-import  { useRef } from 'react';
+import  { useRef, useState, useCallback, useEffect } from 'react';
 import { 
-  X,
   Laptop, 
   Smartphone, 
   Tablet, 
@@ -11,7 +10,7 @@ import {
   Package 
 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react'; 
-import html2canvas from 'html2canvas'; // 需要安装这个包
+import html2canvas from 'html2canvas'; 
 import { Product } from '../types';
 
 // 添加图标映射
@@ -39,13 +38,11 @@ interface ShareModalProps {
   products: Product[];
 }
 
-// 添加微信环境检测
-const isWeixinBrowser = () => {
-  return /MicroMessenger/i.test(navigator.userAgent);
-};
-
 function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
+  const [previewImage, setPreviewImage] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   const calculateTotalValue = () => {
     return products.reduce((sum, product) => sum + product.price, 0);
@@ -58,102 +55,97 @@ function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
     return (totalCost / totalDays).toFixed(2);
   };
 
-  // 修改生成图片函数
-  const generateImage = async () => {
+  // 生成图片
+  const generateImage = useCallback(async () => {
     if (contentRef.current) {
       try {
+        setIsLoading(true);
+        setImageLoaded(false);
+        
+        // 确保内容区域有正确的尺寸
+        const element = contentRef.current;
+       
+
         const scale = window.devicePixelRatio;
-        const canvas = await html2canvas(contentRef.current, {
+
+        const canvas = await html2canvas(element, {
           scale: scale,
           useCORS: true,
-          logging: false,
-          backgroundColor: null,
-          imageTimeout: 0
+          logging: true, // 开启日志
+          backgroundColor: '#ffffff',
+          width: element.offsetWidth,
+          height: element.offsetHeight,
+          onclone: (clonedDoc) => {
+            // 确保克隆的元素可见
+            const clonedElement = clonedDoc.querySelector('[data-html2canvas-clone="true"]');
+            if (clonedElement) {
+              (clonedElement as HTMLElement).style.display = 'block';
+              (clonedElement as HTMLElement).style.visibility = 'visible';
+            }
+          }
         });
 
+        
         const image = canvas.toDataURL('image/png', 1.0);
-
-        if (isWeixinBrowser()) {
-          // 微信环境下，显示图片预览
-          const img = document.createElement('div');
-          img.innerHTML = `
-            <div class="fixed inset-0 bg-black/90 z-[60] flex flex-col items-center justify-center">
-              <img src="${image}" class="max-w-full max-h-[80vh] px-4" />
-              <p class="text-white text-sm mt-4">长按图片保存</p>
-              <button class="mt-4 px-6 py-2 bg-white/20 rounded-full text-white text-sm" onclick="this.parentElement.remove()">
-                关闭预览
-              </button>
-            </div>
-          `;
-          document.body.appendChild(img.firstChild as Node);
-        } else {
-          // 非微信环境，直接下载
-          const link = document.createElement('a');
-          link.download = '我的数码清单.png';
-          link.href = image;
-          link.click();
+        
+        
+        if (image.length < 1000) {
+          throw new Error('生成的图片数据异常');
         }
+
+        setPreviewImage(image);
+        
       } catch (error) {
         console.error('生成图片失败:', error);
+        // 显示错误信息给用户
+        alert('生成图片失败，请重试');
+      } finally {
+        setIsLoading(false);
       }
+    } else {
+      console.error('未找到内容区域');
     }
-  };
+  }, []);
+
+  // 当内容加载完成后生成片
+  useEffect(() => {
+    if (isOpen && contentRef.current) {
+      generateImage();
+    }
+  }, [isOpen, generateImage]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto relative">
-        {/* 统一的顶部标题栏 */}
-        <div className="sticky top-0 bg-white border-b z-10">
-          <div className="p-4 flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-gray-900">
-              分享我的设备清单
-            </h2>
-            <div className="flex items-center space-x-3">
-              {/* PC端显示生成按钮 */}
-              <button
-                onClick={generateImage}
-                className="hidden sm:flex px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors items-center space-x-2"
-              >
-                <span>生成图片</span>
-              </button>
-              {/* PC端显示关闭按钮 */}
-              <button 
-                onClick={onClose}
-                className="hidden sm:flex text-gray-500 hover:text-gray-700"
-              >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* 移动端底部固定操作栏 */}
-        <div className="sm:hidden fixed bottom-6 left-0 right-0 flex justify-center space-x-3 px-4 z-50">
-          <button
-            onClick={generateImage}
-            className="flex-1 bg-indigo-600 text-white px-6 py-3 rounded-full hover:bg-indigo-700 transition-colors max-w-[160px]"
+    <div className="fixed inset-0 bg-black/90 flex flex-col items-center p-4 z-50 overflow-hidden">
+      {/* 隐藏的内容区域，用于生成图片 */}
+      <div className="absolute left-[-9999px]" style={{ width: '800px' }}>
+        <div 
+          ref={contentRef} 
+          style={{
+            padding: '32px',
+            borderRadius: '8px',
+            backgroundColor: '#ffffff',
+            width: '800px',
+            visibility: 'visible',
+            position: 'relative'
+          }}
+        >
+          {/* 添加一个渐变背景的容器 */}
+          <div 
+            style={{
+              background: '#EEF2FF',  // 浅色背景，替代渐变
+              borderRadius: '8px',
+              padding: '24px'
+            }}
           >
-            保存为图片
-          </button>
-          <button
-            onClick={onClose}
-            className="flex-1 bg-gray-900/80 text-white px-6 py-3 rounded-full backdrop-blur-sm max-w-[160px]"
-          >
-            关闭预览
-          </button>
-        </div>
-
-        <div className="p-6">
-          <div ref={contentRef} className="bg-gradient-to-br from-indigo-50 to-white p-4 sm:p-8 rounded-lg">
             <div className="text-center mb-8">
-            <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
-  数码消费追踪报告 📊
-</h3>
-<p className="text-gray-600 mb-8 max-w-xl mx-auto">
-  让数据告诉你每天的数码使用成本
-</p>
+              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+                数码消费追踪报告 📊
+              </h3>
+              <p className="text-gray-600 mb-8 max-w-xl mx-auto">
+                让数据告诉你每天的数码使用成本
+              </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
                 <div className="bg-white p-4 rounded-lg shadow-sm">
@@ -248,11 +240,66 @@ function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
               </p>
             </div>
           </div>
-          
-          {/* 移动端底部留白，避免按钮遮挡内容 */}
-          <div className="h-20 sm:h-0"></div>
         </div>
       </div>
+
+      {/* 加载状态 */}
+      {isLoading && (
+        <div className="flex flex-col items-center justify-center text-white">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent mb-4"></div>
+          <p>正在生成预览图...</p>
+        </div>
+      )}
+
+      {/* 生成失败时显示重试按钮 */}
+      {!isLoading && !previewImage && (
+        <div className="flex flex-col items-center justify-center text-white">
+          <p className="mb-4">生成图片失败</p>
+          <button
+            onClick={generateImage}
+            className="px-6 py-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors"
+          >
+            重新生成
+          </button>
+        </div>
+      )}
+
+      {/* 图片预览 */}
+      {!isLoading && previewImage && (
+        <div className="flex flex-col items-center w-full max-w-3xl h-full">
+          {/* 顶部提示 */}
+          <div className="w-full text-center mb-4 flex-shrink-0">
+            <p className="text-white/80 text-sm">
+              👇 长按或右键图片即可保存
+            </p>
+          </div>
+
+          {/* 图片容器 - 添加滚动支持 */}
+          <div className="relative w-full flex-1 overflow-y-auto min-h-0">
+            <div className="bg-white/5 rounded-lg backdrop-blur-sm p-2">
+              {!imageLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-4 border-white border-t-transparent"></div>
+                </div>
+              )}
+              <img 
+                src={previewImage} 
+                alt="预览图" 
+                className={`w-full object-contain rounded ${!imageLoaded ? 'invisible' : ''}`}
+                onLoad={() => setImageLoaded(true)}
+              />
+            </div>
+          </div>
+
+          {/* 底部按钮 */}
+          <button
+            onClick={onClose}
+            className="mt-6 px-8 py-2.5 bg-white/20 rounded-full text-white text-sm backdrop-blur-sm hover:bg-white/30 transition-colors flex-shrink-0"
+          >
+            关闭预览
+          </button>
+        </div>
+      )}
     </div>
   );
 }
