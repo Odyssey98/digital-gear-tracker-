@@ -105,7 +105,7 @@ function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
             onClick={generateImage}
             className="flex-1 bg-indigo-600 text-white px-6 py-3 rounded-full hover:bg-indigo-700 transition-colors max-w-[160px]"
           >
-            生成图片
+            保存为图片
           </button>
           <button
             onClick={onClose}
