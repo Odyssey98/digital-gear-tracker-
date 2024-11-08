@@ -81,8 +81,8 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
       status: formData.status,
       purchase_date: formData.purchaseDate,   
       expected_lifespan: parseInt(formData.expectedLifespan),  
-      notes: formData.notes,
-      reason_to_buy: formData.reasonToBuy,  
+      notes: formData.notes || '',
+      reason_to_buy: formData.reasonToBuy || '',
     });
     onClose();
   };
@@ -131,9 +131,9 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">价格</label>
-                <div className="flex">
+                <div className="flex max-w-[160px]">
                   <select
-                    className="px-2 py-2 border-r-0 rounded-l-lg bg-gray-50"
+                    className="px-2 py-2 border-r-0 rounded-l-lg bg-gray-50 w-16"
                     value={formData.currency}
                     onChange={(e) => setFormData({ ...formData, currency: e.target.value as Currency })}
                   >
@@ -145,7 +145,7 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
                     type="number"
                     required
                     step="0.01"
-                    className="flex-1 px-3 py-2 border-l-0 rounded-r-lg"
+                    className="w-full px-3 py-2 border-l-0 rounded-r-lg"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                   />
@@ -192,24 +192,42 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">备注</label>
-              <textarea
-                className="w-full px-3 py-2 border rounded-lg"
-                rows={3}
-                value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              ></textarea>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  备注 <span className="text-gray-400 text-xs">(选填)</span>
+                </label>
+                <textarea
+                  className="w-full px-3 py-2 border rounded-lg"
+                  rows={2}
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  placeholder="添加一些备注信息..."
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  购买原因 <span className="text-gray-400 text-xs">(选填)</span>
+                </label>
+                <textarea
+                  className="w-full px-3 py-2 border rounded-lg"
+                  rows={2}
+                  value={formData.reasonToBuy}
+                  onChange={(e) => setFormData({ ...formData, reasonToBuy: e.target.value })}
+                  placeholder="记录一下为什么要买..."
+                />
+              </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">购买原因</label>
-              <textarea
+              <label className="block text-sm font-medium text-gray-700 mb-1">用途</label>
+              <input
+                type="text"
+                required
                 className="w-full px-3 py-2 border rounded-lg"
-                rows={3}
-                value={formData.reasonToBuy}
-                onChange={(e) => setFormData({ ...formData, reasonToBuy: e.target.value })}
-              ></textarea>
+                value={formData.purpose}
+                onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
+              />
             </div>
 
             <button

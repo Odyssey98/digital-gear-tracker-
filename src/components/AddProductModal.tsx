@@ -151,10 +151,10 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">价格</label>
-                <div className="flex">
+                <div className="flex max-w-[160px]">
                   <select
                     name="currency"
-                    className="px-2 py-2 border-r-0 rounded-l-lg bg-gray-50"
+                    className="px-2 py-2 border-r-0 rounded-l-lg bg-gray-50 w-16"
                     value={formData.currency}
                     onChange={handleInputChange}
                   >
@@ -168,7 +168,7 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
                     required
                     min="0"
                     step="0.01"
-                    className={`flex-1 px-3 py-2 border-l-0 rounded-r-lg ${
+                    className={`w-full px-3 py-2 border-l-0 rounded-r-lg ${
                       errors.price ? 'border-red-500' : ''
                     }`}
                     value={formData.price}
@@ -257,12 +257,12 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
       购买原因 <span className="text-gray-400 text-xs">(选填)</span>
     </label>
     <textarea
-      name="reasonToBuy"
-      className="w-full px-3 py-2 border rounded-lg"
-      rows={2}
-      value={formData.reasonToBuy}
-      onChange={handleInputChange}
-      placeholder="记录一下为什么要买..."
+                  name="reasonToBuy"
+                  className="w-full px-3 py-2 border rounded-lg"
+                  rows={2}
+                  value={formData.reasonToBuy}
+                  onChange={handleInputChange}
+                  placeholder="记录一下为什么要买..."
     />
   </div>
 </div>
