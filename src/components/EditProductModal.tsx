@@ -38,16 +38,30 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
   useEffect(() => {
     if (product) {
       setFormData({
-        name: product.name,
-        category: product.category,
-        purpose: product.purpose,
-        price: product.price.toString(),
+        name: product.name || '',
+        category: product.category || '',
+        purpose: product.purpose || '',
+        price: product.price?.toString() || '',
         currency: product.currency || 'CNY',
         status: product.status || '在用',
-        purchaseDate: product.purchaseDate,
-        expectedLifespan: product.expectedLifespan.toString(),
+        purchaseDate: product.purchase_date || '',  
+        expectedLifespan: product.expected_lifespan?.toString() || '',  
         notes: product.notes || '',
-        reasonToBuy: product.reasonToBuy || '',
+        reasonToBuy: product.reason_to_buy || '',  
+      });
+    } else {
+      // 重置表单
+      setFormData({
+        name: '',
+        category: '',
+        purpose: '',
+        price: '',
+        currency: 'CNY',
+        status: '在用',
+        purchaseDate: '',
+        expectedLifespan: '',
+        notes: '',
+        reasonToBuy: '',
       });
     }
   }, [product]);
@@ -56,11 +70,19 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
     e.preventDefault();
     if (!product) return;
     
+    // 转换数据格式以匹配数据库字段名
     onEdit({
-      ...product, // 保留原有的其他属性
-      ...formData,
+      ...product,
+      name: formData.name,
+      category: formData.category,
+      purpose: formData.purpose,
       price: parseFloat(formData.price),
-      expectedLifespan: parseInt(formData.expectedLifespan),
+      currency: formData.currency,
+      status: formData.status,
+      purchase_date: formData.purchaseDate,   
+      expected_lifespan: parseInt(formData.expectedLifespan),  
+      notes: formData.notes,
+      reason_to_buy: formData.reasonToBuy,  
     });
     onClose();
   };

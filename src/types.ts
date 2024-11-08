@@ -10,10 +10,10 @@ export interface Product {
   price: number;
   currency: Currency;
   status: UsageStatus;
-  purchaseDate: string;
-  expectedLifespan: number;
+  purchase_date: string;
+  expected_lifespan: number;
   notes?: string;
-  reasonToBuy?: string;
+  reason_to_buy?: string;
   tags?: string[];
   created_at?: string;
 }
