@@ -116,7 +116,7 @@ function LoginModal() {
         <div className="flex flex-col items-center mb-8">
           <PenTool className="h-12 w-12 text-indigo-600 mb-4" />
           <h2 className="text-2xl font-bold text-gray-900">用时宝</h2>
-          <p className="text-sm text-gray-500 mt-2">记录你的电子设备使用时间</p>
+          <p className="text-sm text-gray-500 mt-2">让数据告诉你每天的电子产品使用成本</p>
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-4">
