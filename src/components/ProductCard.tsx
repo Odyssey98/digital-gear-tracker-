@@ -1,4 +1,15 @@
-import {  Laptop, Trash2, Edit } from 'lucide-react';
+import { 
+  Laptop, 
+  Smartphone, 
+  Tablet, 
+  Headphones, 
+  Camera, 
+  Watch, 
+  Gamepad, 
+  Package,
+  Trash2, 
+  Edit 
+} from 'lucide-react';
 import { Product } from '../types';
 
 interface ProductCardProps {
@@ -6,6 +17,18 @@ interface ProductCardProps {
   onDelete: () => void;
   onEdit: () => void;
 }
+
+// 添加图标映射
+const categoryIcons: Record<string, React.ReactNode> = {
+  '手机': <Smartphone className="h-6 w-6 text-indigo-600" />,
+  '电脑': <Laptop className="h-6 w-6 text-indigo-600" />,
+  '平板': <Tablet className="h-6 w-6 text-indigo-600" />,
+  '耳机': <Headphones className="h-6 w-6 text-indigo-600" />,
+  '相机': <Camera className="h-6 w-6 text-indigo-600" />,
+  '智能手表': <Watch className="h-6 w-6 text-indigo-600" />,
+  '游戏机': <Gamepad className="h-6 w-6 text-indigo-600" />,
+  '其他': <Package className="h-6 w-6 text-indigo-600" />
+};
 
 function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
   const getDaysOwned = (purchaseDate: string) => {
@@ -58,7 +81,7 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-gray-900">{product.name}</h2>
           <div className="flex items-center space-x-2">
-            <Laptop className="h-6 w-6 text-indigo-600" />
+            {categoryIcons[product.category] || <Package className="h-6 w-6 text-indigo-600" />}
             <button
               onClick={onEdit}
               className="p-1 text-gray-400 hover:text-indigo-500 rounded-full hover:bg-gray-100"
