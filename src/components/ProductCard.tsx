@@ -145,6 +145,27 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
+            
+            {progress >= 60 && (
+              <div className="mt-3 p-3 bg-indigo-50 rounded-lg">
+                <div className="flex items-start gap-2">
+                  <div className="text-indigo-500 shrink-0">💡</div>
+                  <div>
+                    <p className="text-sm text-indigo-700">
+                      设备使用已超{progress}%，是否考虑更新换代？
+                    </p>
+                    <a 
+                      href={`https://example.com/rebate?category=${product.category}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-2 inline-flex items-center text-xs text-indigo-600 hover:text-indigo-700"
+                    >
+                      查看同类产品返利优惠 →
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4 pt-4">

@@ -193,36 +193,24 @@ function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
           <div className="space-y-6 md:space-y-8">
             {products.map(product => (
               <div key={product.id} className="bg-white/50 hover:bg-white/80 transition-colors rounded-xl px-3 md:px-8 py-5 md:py-6">
-                <div className="flex items-start md:items-center mb-4 md:mb-6">
-                  <div className="bg-indigo-50 p-2 md:p-3 rounded-lg">
-                    <div className="text-indigo-600 w-5 h-5 md:w-6 md:h-6">
-                      {categoryIcons[product.category]}
+                {/* 装备列表项 */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-start">
+                    <div className="bg-indigo-50 p-2 rounded-lg">
+                      <div className="text-indigo-600 w-5 h-5">
+                        {categoryIcons[product.category]}
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex-1 ml-3 md:ml-4">
-                    <h4 className="font-medium text-gray-900 md:text-lg">{product.name}</h4>
-                    <p className="text-xs md:text-sm text-gray-500 mt-0.5">{product.category} · {product.status}</p>
+                    <div className="ml-3">
+                      <h4 className="font-medium text-gray-900">{product.name}</h4>
+                      <p className="text-xs text-gray-500 mt-0.5">{product.category} · {product.status}</p>
+                    </div>
                   </div>
                   
-                  {/* PC端信息布局优化 */}
-                  <div className="hidden md:flex items-center divide-x divide-gray-100">
-                    <div className="text-center px-8">
-                      <p className="text-sm text-gray-500 mb-1">已使用</p>
-                      <p className="font-medium">{getDaysOwned(product.purchase_date)}天</p>
-                    </div>
-                    <div className="text-center px-8">
-                      <p className="text-sm text-gray-500 mb-1">每日成本</p>
-                      <p className="font-medium">¥{(product.price / getDaysOwned(product.purchase_date)).toFixed(2)}</p>
-                    </div>
-                    <div className="text-center px-8">
-                      <p className="text-sm text-gray-500 mb-1">预期使用</p>
-                      <p className="font-medium">{product.expected_lifespan}年</p>
-                    </div>
-                  </div>
-
-                  <div className="text-right md:ml-8 md:pl-8 md:border-l border-gray-100">
-                    <p className="text-lg md:text-xl font-medium text-indigo-600">¥{product.price}</p>
-                    <p className="text-xs md:text-sm text-gray-500">
+                  {/* 价格信息 */}
+                  <div className="text-right">
+                    <p className="text-lg font-medium text-indigo-600">¥{product.price}</p>
+                    <p className="text-xs text-gray-500">
                       {product.price >= 10000 ? '买都买了 💸' : 
                        product.price >= 5000 ? '大件消费 💰' :
                        product.price >= 1000 ? '小小投资 💵' :
@@ -231,28 +219,60 @@ function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
                   </div>
                 </div>
 
-                {/* 进度条样式优化 - 只调整间距 */}
-                <div className="mb-4 md:mb-0 mt-8 md:mt-10">
-                  <div className="flex justify-between items-center mb-4">
+                {/* 移动端详细信息 */}
+                <div className="md:hidden grid grid-cols-3 gap-4 mb-6">
+                  <div className="text-center">
+                    <p className="text-xs text-gray-500 mb-1">已使用</p>
+                    <p className="font-medium text-sm">{getDaysOwned(product.purchase_date)}天</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-gray-500 mb-1">每日成本</p>
+                    <p className="font-medium text-sm">¥{(product.price / getDaysOwned(product.purchase_date)).toFixed(2)}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-gray-500 mb-1">预期使用</p>
+                    <p className="font-medium text-sm">{product.expected_lifespan}年</p>
+                  </div>
+                </div>
+
+                {/* PC端详细信息 */}
+                <div className="hidden md:flex items-center divide-x divide-gray-100">
+                  <div className="text-center px-8">
+                    <p className="text-sm text-gray-500 mb-1">已使用</p>
+                    <p className="font-medium">{getDaysOwned(product.purchase_date)}天</p>
+                  </div>
+                  <div className="text-center px-8">
+                    <p className="text-sm text-gray-500 mb-1">每日成本</p>
+                    <p className="font-medium">¥{(product.price / getDaysOwned(product.purchase_date)).toFixed(2)}</p>
+                  </div>
+                  <div className="text-center px-8">
+                    <p className="text-sm text-gray-500 mb-1">预期使用</p>
+                    <p className="font-medium">{product.expected_lifespan}年</p>
+                  </div>
+                </div>
+
+                {/* 进度条区域 */}
+                <div className="mt-6 md:mt-8 mb-0">
+                  <div className="flex justify-between items-center mb-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs md:text-sm text-gray-500">使用进度</span>
+                      <span className="text-xs text-gray-500">使用进度</span>
                       {(() => {
                         const { progress } = calculateProgress(product.purchase_date, product.expected_lifespan);
                         return (
-                          <span className="text-xs md:text-sm font-medium text-gray-900">{progress}%</span>
+                          <span className="text-xs font-medium text-gray-900">{progress}%</span>
                         );
                       })()}
                     </div>
                     {(() => {
                       const { message } = calculateProgress(product.purchase_date, product.expected_lifespan);
                       return (
-                        <span className="text-xs md:text-sm text-gray-500">{message}</span>
+                        <span className="text-xs text-gray-500">{message}</span>
                       );
                     })()}
                   </div>
-                  <div className="w-full bg-gray-100 rounded-full h-1.5 md:h-2">
+                  <div className="w-full bg-gray-100 rounded-full h-1.5">
                     <div
-                      className={`h-1.5 md:h-2 rounded-full transition-all duration-500 ${
+                      className={`h-1.5 rounded-full transition-all duration-500 ${
                         (() => {
                           const { progress } = calculateProgress(product.purchase_date, product.expected_lifespan);
                           return progress >= 80 ? 'bg-red-500' : 
