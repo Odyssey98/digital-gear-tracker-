@@ -199,6 +199,22 @@ function LoginModal() {
           </button>
         </form>
       </div>
+      
+      <div className="fixed bottom-4 left-4">
+        <a 
+          href="https://www.producthunt.com/posts/device-cost-tracker?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-device&#0045;cost&#0045;tracker" 
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img 
+            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=599943&theme=light" 
+            alt="Device Cost Tracker" 
+            style={{ width: '250px', height: '54px' }}
+            width="250" 
+            height="54" 
+          />
+        </a>
+      </div>
     </div>
   );
 }
