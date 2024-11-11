@@ -73,10 +73,6 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
       created_at: new Date().toISOString(),
     };
   
-    // 调试日志
-    console.log('Form data:', formData);
-    console.log('New product:', newProduct);
-    
     onAdd(newProduct);
     setFormData(initialFormData);
     onClose();
@@ -189,7 +185,7 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {t('product.status')}
+                  {t('modal.form.status')}
                 </label>
                 <select
                   name="status"
@@ -198,11 +194,11 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
                   value={formData.status}
                   onChange={handleInputChange}
                 >
-                  <option value="未开封">{t('status.unused')}</option>
-                  <option value="在用">{t('status.inUse')}</option>
-                  <option value="闲置">{t('status.idle')}</option>
-                  <option value="已出售">{t('status.sold')}</option>
-                  <option value="已报废">{t('status.scrapped')}</option>
+                  <option value="unused">{t('status.unused')}</option>
+                  <option value="inUse">{t('status.inUse')}</option>
+                  <option value="idle">{t('status.idle')}</option>
+                  <option value="sold">{t('status.sold')}</option>
+                  <option value="scrapped">{t('status.scrapped')}</option>
                 </select>
               </div>
               <div>
@@ -229,7 +225,6 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
               <input
                 type="text"
                 name="purpose"
-                required
                 className="w-full px-3 py-2 border rounded-lg"
                 value={formData.purpose}
                 onChange={handleInputChange}

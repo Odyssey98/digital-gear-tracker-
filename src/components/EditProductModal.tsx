@@ -34,7 +34,7 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
         category: product.category || '',
         purpose: product.purpose || '',
         price: product.price?.toString() || '',
-        status: product.status || '在用',
+        status: product.status || t('status.inUse'),
         purchaseDate: product.purchase_date || '',  
         expectedLifespan: product.expected_lifespan?.toString() || '',  
         notes: product.notes || '',
@@ -47,14 +47,14 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
         category: '',
         purpose: '',
         price: '',
-        status: '在用',
+        status: t('status.inUse') as UsageStatus,
         purchaseDate: '',
         expectedLifespan: '',
         notes: '',
         reasonToBuy: '',
       });
     }
-  }, [product]);
+  }, [product, t]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -156,11 +156,11 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value as UsageStatus })}
                 >
-                  <option value="未开封">{t('status.unused')}</option>
-                  <option value="在用">{t('status.inUse')}</option>
-                  <option value="闲置">{t('status.idle')}</option>
-                  <option value="已出售">{t('status.sold')}</option>
-                  <option value="已报废">{t('status.scrapped')}</option>
+                  <option value="unused">{t('status.unused')}</option>
+                  <option value="inUse">{t('status.inUse')}</option>
+                  <option value="idle">{t('status.idle')}</option>
+                  <option value="sold">{t('status.sold')}</option>
+                  <option value="scrapped">{t('status.scrapped')}</option>
                 </select>
               </div>
             </div>
@@ -232,7 +232,6 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
               </label>
               <input
                 type="text"
-                required
                 className="w-full px-3 py-2 border rounded-lg"
                 value={formData.purpose}
                 onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}

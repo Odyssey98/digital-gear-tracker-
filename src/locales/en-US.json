@@ -29,6 +29,13 @@
         "new": "Just Started Using"
       }
     },
+    "status": {
+      "unused": "Unused",
+      "inUse": "In Use",
+      "idle": "Idle",
+      "sold": "Sold",
+      "scrapped": "Scrapped"
+    },
     "upgrade": {
       "tip": "Device usage has exceeded {{progress}}%, consider upgrading?",
       "viewDeals": "View Similar Products Deals →"
@@ -201,6 +208,13 @@
     "preview": {
       "saveHint": "👇 Long press or right click to save image",
       "close": "Close Preview"
+    },
+    "status": {
+      "unused": "Unused",
+      "inUse": "In Use",
+      "idle": "Idle",
+      "sold": "Sold",
+      "scrapped": "Scrapped"
     }
   },
   "deviceType": {

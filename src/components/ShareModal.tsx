@@ -204,7 +204,7 @@ function ShareModal({ isOpen, onClose, products }: ShareModalProps) {
                       <div>
                         <h3 className="font-medium text-zinc-100">{product.name}</h3>
                         <p className="text-sm text-zinc-400">
-                          {t(`category.${product.category}`)} · {t(`status.${product.status}`)}
+                        {t(product.category)} · {t(product.status)}
                         </p>
                       </div>
                     </div>
