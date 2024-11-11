@@ -1,0 +1,220 @@
+{
+  "common": {
+    "appName": "TimeValue",
+    "slogan": "Track your digital device costs daily",
+    "logout": "Logout",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "product": {
+    "name": "Product Name",
+    "category": "Category",
+    "purpose": "Purpose",
+    "price": "Price",
+    "purchaseDate": "Purchase Date",
+    "expectedUse": "Expected Use",
+    "daysOwned": "Days Owned",
+    "year": "year",
+    "day": "days",
+    "progress": {
+      "title": "Usage Progress",
+      "status": {
+        "exceeded": "Exceeded Expected Lifespan",
+        "nearEnd": "Near End of Life",
+        "halfUsed": "Half Life Reached",
+        "good": "Good Condition",
+        "new": "Just Started Using"
+      }
+    },
+    "upgrade": {
+      "tip": "Device usage has exceeded {{progress}}%, consider upgrading?",
+      "viewDeals": "View Similar Products Deals →"
+    },
+    "costPerDay": {
+      "current": "Current Average",
+      "expected": "Expected Average",
+      "unit": "${{value}}/day"
+    },
+    "notes": "Notes",
+    "reasonToBuy": "Reason to Buy",
+    "actions": {
+      "edit": "Edit Product",
+      "delete": "Delete Product"
+    }
+  },
+  "status": {
+    "unused": "Unused",
+    "inUse": "In Use",
+    "idle": "Idle",
+    "sold": "Sold",
+    "scrapped": "Scrapped"
+  },
+  "login": {
+    "title": "TimeValue",
+    "slogan": "Track your digital device costs daily",
+    "username": "Username",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "register": "Register",
+    "login": "Login",
+    "processing": "Processing...",
+    "hasAccount": "Have an account? Login",
+    "noAccount": "No account? Register",
+    "passwordRequirement": "Password must be at least 6 characters and contain both letters and numbers",
+    "placeholders": {
+      "usernameRegister": "At least 2 characters",
+      "usernameLogin": "Enter your username",
+      "passwordRegister": "At least 6 characters with letters and numbers",
+      "passwordLogin": "Enter your password",
+      "confirmPassword": "Confirm your password"
+    },
+    "errors": {
+      "usernameRequired": "Please enter username",
+      "passwordRequired": "Please enter password",
+      "usernameLength": "Username must be at least 2 characters",
+      "passwordLength": "Password must be at least 6 characters",
+      "passwordFormat": "Password must contain both letters and numbers",
+      "confirmPasswordRequired": "Please confirm your password",
+      "passwordMismatch": "Passwords do not match",
+      "registerSuccess": "Registration successful!",
+      "loginSuccess": "Login successful!",
+      "loginFailed": "Login failed",
+      "registerFailed": "Registration failed"
+    }
+  },
+  "app": {
+    "title": "TimeValue",
+    "logout": "Logout",
+    "greeting": "Hi, {{name}}",
+    "slogan": "Let's manage your digital devices today ✨",
+    "addProduct": "Add Product",
+    "share": "Share",
+    "shareTitle": "Share My Devices",
+    "welcome": {
+      "title": "👋 Welcome to TimeValue",
+      "description": "Start by recording your first device! We recommend beginning with your current phone or computer.",
+      "addFirst": "Add My First Device",
+      "benefits": {
+        "title": "Recording device information helps you:",
+        "items": [
+          "Calculate daily usage costs",
+          "Track device lifespan",
+          "Avoid impulse purchases",
+          "Plan replacements wisely"
+        ]
+      }
+    },
+    "confirmDelete": "Are you sure you want to delete this product?"
+  },
+  "categories": {
+    "phone": "Phone",
+    "computer": "Computer",
+    "tablet": "Tablet",
+    "headphones": "Headphones",
+    "camera": "Camera",
+    "smartwatch": "Smartwatch",
+    "gaming": "Gaming Console",
+    "other": "Other"
+  },
+  "modal": {
+    "add": {
+      "title": "Add New Product",
+      "close": "Close",
+      "submit": "Add Product",
+      "errors": {
+        "priceRequired": "Price must be greater than 0",
+        "lifespanRequired": "Expected lifespan must be greater than 0",
+        "dateRequired": "Please select purchase date"
+      },
+      "placeholders": {
+        "notes": "Add some notes...",
+        "reasonToBuy": "Why did you buy this..."
+      }
+    },
+    "edit": {
+      "title": "Edit Product",
+      "submit": "Save Changes"
+    },
+    "form": {
+      "name": "Product Name",
+      "category": "Category",
+      "selectCategory": "Select category",
+      "price": "Price",
+      "status": "Status",
+      "purchaseDate": "Purchase Date",
+      "expectedLifespan": "Expected Lifespan",
+      "purpose": "Purpose",
+      "notes": {
+        "label": "Notes",
+        "optional": "(Optional)",
+        "placeholder": "Add some notes..."
+      },
+      "reasonToBuy": {
+        "label": "Reason to Buy",
+        "optional": "(Optional)",
+        "placeholder": "Why did you buy this..."
+      }
+    }
+  },
+  "statistics": {
+    "totalAssets": "Total Assets",
+    "averagePrice": "Average Price",
+    "dailyAverage": "Daily Average",
+    "equivalent": "≈ {{count}} {{item}}"
+  },
+  "share": {
+    "title": "Digital Consumption Report",
+    "subtitle": "Let the data tell you your daily digital costs",
+    "overview": {
+      "devices": "My Devices",
+      "totalValue": "Total Value",
+      "dailyCost": "Daily Cost"
+    },
+    "deviceList": {
+      "title": "My Device List",
+      "subtitle": "Each one carefully chosen"
+    },
+    "deviceCard": {
+      "days": "d",
+      "years": "y",
+      "daysUsed": "Used",
+      "dailyCost": "Daily Cost",
+      "expectedUse": "Expected Use"
+    },
+    "priceComment": {
+      "veryHigh": "Major Investment 💸",
+      "high": "Big Purchase 💰",
+      "medium": "Worth It 💵",
+      "low": "Small Buy 🫰"
+    },
+    "qrCode": {
+      "title": "Want to know your daily digital expenses?",
+      "subtitle": "Scan to use TimeValue, analyze your digital consumption rationally",
+      "via": "via TimeValue - Your Digital Consumption Analysis Assistant"
+    },
+    "loading": "Generating preview...",
+    "error": "Failed to generate image",
+    "retry": "Try Again",
+    "preview": {
+      "saveHint": "👇 Long press or right click to save image",
+      "close": "Close Preview"
+    }
+  },
+  "deviceType": {
+    "Phone": "Phone",
+    "Computer": "Computer",
+    "Tablet": "Tablet",
+    "Headphones": "Headphones",
+    "Camera": "Camera",
+    "Smartwatch": "Smartwatch",
+    "Gamepad": "Gamepad",
+    "Other": "Other"
+  },
+  "purpose": {
+    "daily": "Daily Use",
+    "workEntertainment": "Work/Entertainment"
+  }
+}

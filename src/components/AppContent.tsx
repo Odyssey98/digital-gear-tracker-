@@ -10,8 +10,10 @@ import { Product } from '../types';
 import { useProducts } from '../hooks/useProducts';
 import { useUser } from '../context/UserContext';
 import ShareModal from './ShareModal';
+import { useTypedTranslation } from '../utils/i18n';
 
 function AppContent() {
+  const { t, tArray } = useTypedTranslation();
   const { user, logout } = useUser();
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -33,7 +35,7 @@ function AppContent() {
   };
 
   const handleDeleteProduct = (productId: string) => {
-    if (window.confirm('确定要删除这个产品吗？')) {
+    if (window.confirm(t('app.confirmDelete'))) {
       deleteProduct(productId);
     }
   };
@@ -47,13 +49,15 @@ function AppContent() {
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3">
                 <PenTool className="h-7 w-7 sm:h-8 sm:w-8 text-indigo-600" />
-                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">用时宝</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+                  {t('app.title')}
+                </h1>
               </div>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={logout}
                   className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
-                  title="退出登录"
+                  title={t('app.logout')}
                 >
                   <LogOut className="h-5 w-5" />
                 </button>
@@ -63,10 +67,10 @@ function AppContent() {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-t pt-4 space-y-4 sm:space-y-0">
               <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
                 <span className="text-lg text-gray-700">
-                  Hi, <span className="font-medium text-indigo-600">{user?.name}</span>
+                  {t('app.greeting', { name: user?.name })}
                 </span>
                 <span className="text-sm text-gray-500 hidden sm:inline">
-                  今天也要好好管理你的数码装备哦 ✨
+                  {t('app.slogan')}
                 </span>
               </div>
 
@@ -75,15 +79,15 @@ function AppContent() {
                   onClick={() => setShowAddModal(true)}
                   className="flex-1 sm:flex-none px-4 py-2 bg-indigo-600 text-white text-sm sm:text-base rounded-lg hover:bg-indigo-700 transition-colors"
                 >
-                  添加产品
+                  {t('app.addProduct')}
                 </button>
                 <button
                   onClick={() => setShowShareModal(true)}
                   className="flex-1 sm:flex-none px-4 py-2 border border-gray-200 text-gray-600 text-sm sm:text-base rounded-lg hover:bg-gray-50 transition-colors flex items-center justify-center space-x-2"
-                  title="分享我的设备"
+                  title={t('app.shareTitle')}
                 >
                   <Share2 className="h-4 w-4" />
-                  <span>分享</span>
+                  <span>{t('app.share')}</span>
                 </button>
               </div>
             </div>
@@ -101,26 +105,25 @@ function AppContent() {
           <div className="text-center py-12">
             <div className="max-w-md mx-auto">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                👋 欢迎使用用时宝
+                {t('app.welcome.title')}
               </h3>
               <p className="text-gray-600 mb-6">
-                开始记录你的第一个设备吧！建议从正在使用的手机或电脑开始。
+                {t('app.welcome.description')}
               </p>
               <div className="space-y-4">
                 <button
                   onClick={() => setShowAddModal(true)}
                   className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors inline-flex items-center space-x-2"
                 >
-                  <span>添加我的第一个设备</span>
+                  <span>{t('app.welcome.addFirst')}</span>
                   <span className="text-xl">→</span>
                 </button>
                 <div className="text-sm text-gray-500">
-                  <p>记录设备信息可以帮助你：</p>
+                  <p>{t('app.welcome.benefits.title')}</p>
                   <ul className="mt-2 space-y-1">
-                    <li>• 计算设备的每日使用成本</li>
-                    <li>• 追踪设备的使用寿命</li>
-                    <li>• 避免冲动消费</li>
-                    <li>• 合理规划更换时间</li>
+                    {tArray('app.welcome.benefits.items').map((item, index) => (
+                      <li key={index}>• {item}</li>
+                    ))}
                   </ul>
                 </div>
               </div>

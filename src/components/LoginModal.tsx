@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { PenTool } from 'lucide-react';
+import { PenTool, Languages } from 'lucide-react';
 import { useUser } from '../context/UserContext';
+import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 
 function LoginModal() {
+  const { t, i18n } = useTranslation();
   const [isRegister, setIsRegister] = useState(false);
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -13,10 +15,10 @@ function LoginModal() {
 
   const validatePassword = (password: string): string | null => {
     if (password.length < 6) {
-      return '密码长度至少需要6位';
+      return t('login.errors.passwordLength');
     }
     if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
-      return '密码需要包含字母和数字';
+      return t('login.errors.passwordFormat');
     }
     return null;
   };
@@ -32,27 +34,24 @@ function LoginModal() {
     setIsLoading(true);
     
     try {
-      // 基础验证
       if (!name.trim()) {
-        toast.error('请输入用户名');
+        toast.error(t('login.errors.usernameRequired'));
         setIsLoading(false);
         return;
       }
       if (!password) {
-        toast.error('请输入密码');
+        toast.error(t('login.errors.passwordRequired'));
         setIsLoading(false);
         return;
       }
 
       if (isRegister) {
-        // 注册时的验证
         if (name.trim().length < 2) {
-          toast.error('用户名至少需要2个字符');
+          toast.error(t('login.errors.usernameLength'));
           setIsLoading(false);
           return;
         }
 
-        // 使用 validatePassword 函数验证密码格式
         const passwordError = validatePassword(password);
         if (passwordError) {
           toast.error(passwordError);
@@ -61,49 +60,44 @@ function LoginModal() {
         }
 
         if (!confirmPassword) {
-          toast.error('请确认密码');
+          toast.error(t('login.errors.confirmPasswordRequired'));
           setIsLoading(false);
           return;
         }
         if (password !== confirmPassword) {
-          toast.error('两次输入的密码不一致');
+          toast.error(t('login.errors.passwordMismatch'));
           setIsLoading(false);
           return;
         }
 
         await register(name.trim(), password);
-        toast.success('注册成功！');
+        toast.success(t('login.errors.registerSuccess'));
         setIsRegister(false);
         resetForm();
       } else {
-        console.log('Attempting login...');
         try {
           await login(name.trim(), password);
-          console.log('Login successful');
-          toast.success('登录成功！');
+          toast.success(t('login.errors.loginSuccess'));
           resetForm();
         } catch (loginError) {
-          console.log('Login failed:', loginError);
           if (loginError instanceof Error) {
             toast.error(loginError.message);
           } else {
-            toast.error('登录失败');
+            toast.error(t('login.errors.loginFailed'));
           }
         }
       }
     } catch (error) {
-      console.log('Outer catch:', error);
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
-        toast.error(isRegister ? '注册失败' : '登录失败');
+        toast.error(t(isRegister ? 'login.errors.registerFailed' : 'login.errors.loginFailed'));
       }
     } finally {
       setIsLoading(false);
     }
   };
 
-  // 添加按钮禁用条件
   const isSubmitDisabled = 
     isLoading || 
     !name.trim() || 
@@ -113,23 +107,32 @@ function LoginModal() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-xl max-w-sm w-full p-6 shadow-lg">
+        <div className="absolute top-4 right-4">
+          <button
+            onClick={() => i18n.changeLanguage(i18n.language === 'zh-CN' ? 'en-US' : 'zh-CN')}
+            className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
+          >
+            <Languages className="h-5 w-5" />
+          </button>
+        </div>
+        
         <div className="flex flex-col items-center mb-8">
           <PenTool className="h-12 w-12 text-indigo-600 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900">用时宝</h2>
-          <p className="text-sm text-gray-500 mt-2">让数据告诉你每天的电子产品使用成本</p>
+          <h2 className="text-2xl font-bold text-gray-900">{t('login.title')}</h2>
+          <p className="text-sm text-gray-500 mt-2">{t('login.slogan')}</p>
         </div>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              用户名
+              {t('login.username')}
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder={isRegister ? "至少2个字符" : "请输入用户名"}
+              placeholder={t(isRegister ? 'login.placeholders.usernameRegister' : 'login.placeholders.usernameLogin')}
               required
               disabled={isLoading}
               minLength={2}
@@ -138,14 +141,14 @@ function LoginModal() {
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              密码
+              {t('login.password')}
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder={isRegister ? "至少6位，包含字母和数字" : "请输入密码"}
+              placeholder={t(isRegister ? 'login.placeholders.passwordRegister' : 'login.placeholders.passwordLogin')}
               required
               disabled={isLoading}
               minLength={6}
@@ -156,21 +159,21 @@ function LoginModal() {
             <>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  确认密码
+                  {t('login.confirmPassword')}
                 </label>
                 <input
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="请再次输入密码"
+                  placeholder={t('login.placeholders.confirmPassword')}
                   required
                   disabled={isLoading}
                   minLength={6}
                 />
               </div>
               <p className="text-xs text-gray-500 mt-1">
-                密码要求：至少6位，必须包含字母和数字
+                {t('login.passwordRequirement')}
               </p>
             </>
           )}
@@ -180,7 +183,7 @@ function LoginModal() {
             className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isSubmitDisabled}
           >
-            {isLoading ? '处理中...' : (isRegister ? '注册' : '登录')}
+            {isLoading ? t('login.processing') : t(isRegister ? 'login.register' : 'login.login')}
           </button>
 
           <button
@@ -192,7 +195,7 @@ function LoginModal() {
             }}
             className="w-full text-indigo-600 text-sm hover:underline"
           >
-            {isRegister ? '已有账号？点击登录' : '没有账号？点击注册'}
+            {t(isRegister ? 'login.hasAccount' : 'login.noAccount')}
           </button>
         </form>
       </div>

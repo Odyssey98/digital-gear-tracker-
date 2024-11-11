@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { Product, UsageStatus } from '../types';
+import { useTranslation } from 'react-i18next';
+import { useCategories } from '../constants/categories';
 
 interface EditProductModalProps {
   isOpen: boolean;
@@ -9,19 +11,9 @@ interface EditProductModalProps {
   product: Product | null;
 }
 
-// 预设的类别选项
-const CATEGORY_OPTIONS = [
-  '手机',
-  '电脑',
-  '平板',
-  '耳机',
-  '相机',
-  '智能手表',
-  '游戏机',
-  '其他'
-];
-
 function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModalProps) {
+  const { t, i18n } = useTranslation();
+  const categories = useCategories();
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -33,6 +25,7 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
     notes: '',
     reasonToBuy: '',
   });
+  const currencySymbol = i18n.language.startsWith('zh') ? '¥' : '$';
 
   useEffect(() => {
     if (product) {
@@ -94,7 +87,7 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
       <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto relative">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">编辑产品</h2>
+            <h2 className="text-xl font-semibold">{t('modal.edit.title')}</h2>
             <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
               <X className="h-6 w-6" />
             </button>
@@ -103,7 +96,9 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">产品名称</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('modal.form.name')}
+                </label>
                 <input
                   type="text"
                   required
@@ -113,16 +108,20 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">类别</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('modal.form.category')}
+                </label>
                 <select
                   required
                   className="w-full px-3 py-2 border rounded-lg bg-white"
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 >
-                  <option value="">请选择类别</option>
-                  {CATEGORY_OPTIONS.map(option => (
-                    <option key={option} value={option}>{option}</option>
+                  <option value="">{t('modal.form.selectCategory')}</option>
+                  {categories.map(category => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -130,9 +129,13 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">价格</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('modal.form.price')}
+                </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2 text-gray-500">￥</span>
+                  <span className="absolute left-3 top-2 text-gray-500">
+                    {currencySymbol}
+                  </span>
                   <input
                     type="number"
                     required
@@ -144,25 +147,29 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">使用状态</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('modal.form.status')}
+                </label>
                 <select
                   required
                   className="w-full px-3 py-2 border rounded-lg bg-white"
                   value={formData.status}
                   onChange={(e) => setFormData({ ...formData, status: e.target.value as UsageStatus })}
                 >
-                  <option value="未开封">未开封</option>
-                  <option value="在用">在用</option>
-                  <option value="闲置">闲置</option>
-                  <option value="已出售">已出售</option>
-                  <option value="已报废">已报废</option>
+                  <option value="未开封">{t('status.unused')}</option>
+                  <option value="在用">{t('status.inUse')}</option>
+                  <option value="闲置">{t('status.idle')}</option>
+                  <option value="已出售">{t('status.sold')}</option>
+                  <option value="已报废">{t('status.scrapped')}</option>
                 </select>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">购买日期</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('modal.form.purchaseDate')}
+                </label>
                 <input
                   type="date"
                   required
@@ -172,7 +179,9 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">预期使用年限</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('modal.form.expectedLifespan')}
+                </label>
                 <input
                   type="number"
                   required
@@ -187,32 +196,40 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  备注 <span className="text-gray-400 text-xs">(选填)</span>
+                  {t('modal.form.notes.label')} 
+                  <span className="text-gray-400 text-xs">
+                    {t('modal.form.notes.optional')}
+                  </span>
                 </label>
                 <textarea
                   className="w-full px-3 py-2 border rounded-lg"
                   rows={2}
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  placeholder="添加一些备注信息..."
+                  placeholder={t('modal.form.notes.placeholder')}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  购买原因 <span className="text-gray-400 text-xs">(选填)</span>
+                  {t('modal.form.reasonToBuy.label')}
+                  <span className="text-gray-400 text-xs">
+                    {t('modal.form.reasonToBuy.optional')}
+                  </span>
                 </label>
                 <textarea
                   className="w-full px-3 py-2 border rounded-lg"
                   rows={2}
                   value={formData.reasonToBuy}
                   onChange={(e) => setFormData({ ...formData, reasonToBuy: e.target.value })}
-                  placeholder="记录一下为什么要买..."
+                  placeholder={t('modal.form.reasonToBuy.placeholder')}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">用途</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('modal.form.purpose')}
+              </label>
               <input
                 type="text"
                 required
@@ -226,7 +243,7 @@ function EditProductModal({ isOpen, onClose, onEdit, product }: EditProductModal
               type="submit"
               className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors"
             >
-              保存修改
+              {t('modal.edit.submit')}
             </button>
           </form>
         </div>

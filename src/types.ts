@@ -1,5 +1,15 @@
 
-export type UsageStatus = '未开封' | '在用' | '闲置' | '已出售' | '已报废';
+export type UsageStatus = 
+  | '未开封' 
+  | '在用' 
+  | '闲置' 
+  | '已出售' 
+  | '已报废'
+  | 'Unused'
+  | 'In Use'
+  | 'Idle'
+  | 'Sold'
+  | 'Scrapped';
 
 export interface Product {
   id: string;

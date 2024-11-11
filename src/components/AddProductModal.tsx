@@ -3,6 +3,8 @@ import { X } from 'lucide-react';
 import { Product, UsageStatus } from '../types';
 import { useUser } from '../context/UserContext';  // 导入用户上下文
 import { getDeviceType } from '../hooks/useDeviceInfo';
+import { useTranslation } from 'react-i18next';
+import { useCategories } from '../constants/categories';
 
 interface AddProductModalProps {
   isOpen: boolean;
@@ -10,17 +12,6 @@ interface AddProductModalProps {
   onAdd: (product: Product) => void;
 }
 
-// 预设的类别选项
-const CATEGORY_OPTIONS = [
-  '手机',
-  '电脑',
-  '平板',
-  '耳机',
-  '相机',
-  '智能手表',
-  '游戏机',
-  '其他'
-];
 
 // 预设值和类型
 const initialFormData = {
@@ -37,20 +28,25 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
   const [formData, setFormData] = useState(initialFormData);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { user } = useUser();  // 获取当前用户信息
+  const { t, i18n } = useTranslation();
+  const categories = useCategories();
+
+  // 添加货币符号判断
+  const currencySymbol = i18n.language.startsWith('zh') ? '¥' : '$';
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
     
     if (parseFloat(formData.price) <= 0) {
-      newErrors.price = '价格必须大于0';
+      newErrors.price = t('modal.add.errors.priceRequired');
     }
     
     if (parseInt(formData.expectedLifespan) <= 0) {
-      newErrors.expectedLifespan = '预期使用年限必须大于0';
+      newErrors.expectedLifespan = t('modal.add.errors.lifespanRequired');
     }
     
     if (!formData.purchaseDate) {
-      newErrors.purchaseDate = '请选择购买日期';
+      newErrors.purchaseDate = t('modal.add.errors.dateRequired');
     }
     
     setErrors(newErrors);
@@ -104,11 +100,11 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
       <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">添加新产品</h2>
+            <h2 className="text-xl font-semibold">{t('modal.add.title')}</h2>
             <button 
               onClick={onClose} 
               className="text-gray-500 hover:text-gray-700"
-              aria-label="关闭"
+              aria-label={t('modal.add.close')}
             >
               <X className="h-6 w-6" />
             </button>
@@ -118,7 +114,9 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
             {/* 基本信息组 */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">产品名称</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('product.name')}
+                </label>
                 <input
                   type="text"
                   name="name"
@@ -129,7 +127,9 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">类别</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('product.category')}
+                </label>
                 <select
                   name="category"
                   required
@@ -137,9 +137,9 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
                   value={formData.category}
                   onChange={handleInputChange}
                 >
-                  <option value="">请选择类别</option>
-                  {CATEGORY_OPTIONS.map(option => (
-                    <option key={option} value={option}>{option}</option>
+                  <option value="">{t('modal.form.selectCategory')}</option>
+                  {categories.map(category => (
+                    <option key={category} value={category}>{category}</option>
                   ))}
                 </select>
               </div>
@@ -148,9 +148,11 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
             {/* 价格和货币组 */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">价格</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('product.price')}
+                </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2 text-gray-500">￥</span>
+                  <span className="absolute left-3 top-2 text-gray-500">{currencySymbol}</span>
                   <input
                     type="number"
                     name="price"
@@ -169,13 +171,15 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">购买日期</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('product.purchaseDate')}
+                </label>
                 <input
                   type="date"
-                  name="purchaseDate" 
+                  name="purchaseDate"
                   required
                   className="w-full px-3 py-2 border rounded-lg"
-                  value={formData.purchaseDate}  
+                  value={formData.purchaseDate}
                   onChange={handleInputChange}
                 />
               </div>
@@ -184,7 +188,9 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
             {/* 使用状态和进度组 */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">使用状态</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('product.status')}
+                </label>
                 <select
                   name="status"
                   required
@@ -192,15 +198,17 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
                   value={formData.status}
                   onChange={handleInputChange}
                 >
-                  <option value="未开封">未开封</option>
-                  <option value="在用">在用</option>
-                  <option value="闲置">闲置</option>
-                  <option value="已出售">已出售</option>
-                  <option value="已报废">已报废</option>
+                  <option value="未开封">{t('status.unused')}</option>
+                  <option value="在用">{t('status.inUse')}</option>
+                  <option value="闲置">{t('status.idle')}</option>
+                  <option value="已出售">{t('status.sold')}</option>
+                  <option value="已报废">{t('status.scrapped')}</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">预期使用年限</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('product.expectedLifespan')}
+                </label>
                 <input
                   type="number"
                   name="expectedLifespan"
@@ -215,7 +223,9 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
 
             {/* 用途 */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">用途</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('product.purpose')}
+              </label>
               <input
                 type="text"
                 name="purpose"
@@ -228,39 +238,39 @@ function AddProductModal({ isOpen, onClose, onAdd }: AddProductModalProps) {
 
             {/* 备注信息组 */}
             <div className="space-y-4">
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">
-      备注 <span className="text-gray-400 text-xs">(选填)</span>
-    </label>
-    <textarea
-      name="notes"
-      className="w-full px-3 py-2 border rounded-lg"
-      rows={2}
-      value={formData.notes}
-      onChange={handleInputChange}
-      placeholder="添加一些备注信息..."
-    />
-  </div>
-  <div>
-    <label className="block text-sm font-medium text-gray-700 mb-1">
-      购买原因 <span className="text-gray-400 text-xs">(选填)</span>
-    </label>
-    <textarea
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('product.notes')} <span className="text-gray-400 text-xs">{t('modal.form.notes.optional')}</span>
+                </label>
+                <textarea
+                  name="notes"
+                  className="w-full px-3 py-2 border rounded-lg"
+                  rows={2}
+                  value={formData.notes}
+                  onChange={handleInputChange}
+                  placeholder={t('modal.form.notes.placeholder')}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {t('product.reasonToBuy')} <span className="text-gray-400 text-xs">{t('modal.form.reasonToBuy.optional')}</span>
+                </label>
+                <textarea
                   name="reasonToBuy"
                   className="w-full px-3 py-2 border rounded-lg"
                   rows={2}
                   value={formData.reasonToBuy}
                   onChange={handleInputChange}
-                  placeholder="记录一下为什么要买..."
-    />
-  </div>
-</div>
+                  placeholder={t('modal.form.reasonToBuy.placeholder')}
+                />
+              </div>
+            </div>
 
             <button
               type="submit"
               className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors"
             >
-              添加产品
+              {t('modal.add.submit')}
             </button>
           </form>
         </div>

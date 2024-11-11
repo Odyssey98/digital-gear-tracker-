@@ -1,24 +1,48 @@
+import { UsageStatus } from '../types';
+import i18next from 'i18next';  
 
-export function getDeviceType() {
+interface DeviceInfo {
+  name: string;
+  category: string;
+  purpose: string;
+  price: string;
+  status: UsageStatus;
+  purchaseDate: string;
+  expectedLifespan: string;
+  notes: string;
+  reasonToBuy: string;
+}
+
+export function getDeviceType(): DeviceInfo {
   const userAgent = navigator.userAgent;
+  
+  const baseInfo = {
+    name: '',
+    price: '',
+    status: i18next.t('status.inUse') as UsageStatus,
+    purchaseDate: new Date().toISOString().split('T')[0],
+    expectedLifespan: '1',
+    notes: '',
+    reasonToBuy: '',
+  };
   
   if (/iPhone|iPad|iPod/.test(userAgent)) {
     return {
-      name: '',
-      category: '手机/平板',
-      purpose: '日常使用',
+      ...baseInfo,
+      category: i18next.t('deviceType.mobileTablet'),
+      purpose: i18next.t('purpose.daily'),
     };
   } else if (/Android/.test(userAgent)) {
     return {
-      name: '',
-      category: '手机/平板',
-      purpose: '日常使用',
+      ...baseInfo,
+      category: i18next.t('deviceType.mobileTablet'),
+      purpose: i18next.t('purpose.daily'),
     };
   } else {
     return {
-      name: '',
-      category: '电脑',
-      purpose: '工作/娱乐',
+      ...baseInfo,
+      category: i18next.t('deviceType.computer'),
+      purpose: i18next.t('purpose.workEntertainment'),
     };
   }
 }

@@ -11,6 +11,7 @@ import {
   Edit 
 } from 'lucide-react';
 import { Product } from '../types';
+import { useTranslation } from 'react-i18next';
 
 interface ProductCardProps {
   product: Product;
@@ -31,6 +32,9 @@ const categoryIcons: Record<string, React.ReactNode> = {
 };
 
 function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
+  const { t } = useTranslation();
+  const { i18n } = useTranslation();
+
   const getDaysOwned = (purchaseDate: string) => {
     const purchase = new Date(purchaseDate);
     const today = new Date();
@@ -56,11 +60,11 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
   };
 
   const getProgressMessage = (progress: number) => {
-    if (progress >= 100) return '已超出预期使用时间';
-    if (progress >= 80) return '接近预期使用期限';
-    if (progress >= 50) return '使用过半';
-    if (progress >= 20) return '使用良好';
-    return '刚开始使用';
+    if (progress >= 100) return t('product.progress.status.exceeded');
+    if (progress >= 80) return t('product.progress.status.nearEnd');
+    if (progress >= 50) return t('product.progress.status.halfUsed');
+    if (progress >= 20) return t('product.progress.status.good');
+    return t('product.progress.status.new');
   };
 
   const { progress, message } = calculateProgress(product.purchase_date, product.expected_lifespan);
@@ -68,13 +72,12 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
   // 格式化日期的辅助函数
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('zh-CN', {
+    return date.toLocaleDateString(i18n.language, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
   };
-
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <div className="p-6">
@@ -85,14 +88,14 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
             <button
               onClick={onEdit}
               className="p-1 text-gray-400 hover:text-indigo-500 rounded-full hover:bg-gray-100"
-              title="编辑产品"
+              title={t('product.actions.edit')}
             >
               <Edit className="h-5 w-5" />
             </button>
             <button
               onClick={onDelete}
               className="p-1 text-gray-400 hover:text-red-500 rounded-full hover:bg-gray-100"
-              title="删除产品"
+              title={t('product.actions.delete')}
             >
               <Trash2 className="h-5 w-5" />
             </button>
@@ -101,38 +104,38 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
 
         <div className="space-y-4">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500">类别</span>
+            <span className="text-gray-500">{t('product.category')}</span>
             <span className="font-medium">{product.category}</span>
           </div>
 
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500">用途</span>
+            <span className="text-gray-500">{t('product.purpose')}</span>
             <span className="font-medium">{product.purpose}</span>
           </div>
 
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500">价格</span>
+            <span className="text-gray-500">{t('product.price')}</span>
             <span className="font-medium">￥{product.price.toFixed(2)}</span>
           </div>
 
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500">购买日期</span>
+            <span className="text-gray-500">{t('product.purchaseDate')}</span>
             <span className="font-medium">{formatDate(product.purchase_date)}</span>
           </div>
 
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500">预期使用</span>
-            <span className="font-medium">{product.expected_lifespan} 年</span>
+            <span className="text-gray-500">{t('product.expectedUse')}</span>
+            <span className="font-medium">{product.expected_lifespan} {t('product.year')}</span>
           </div>
 
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-500">拥有天数</span>
-            <span className="font-medium">{daysOwned}天</span>
+            <span className="text-gray-500">{t('product.daysOwned')}</span>
+            <span className="font-medium">{daysOwned}{t('product.day')}</span>
           </div>
 
           <div className="pt-4 border-t">
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm text-gray-500">使用进度</span>
+              <span className="text-sm text-gray-500">{t('product.progress.title')}</span>
               <span className="text-sm font-medium">{progress}% - {message}</span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
@@ -152,7 +155,7 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
                   <div className="text-indigo-500 shrink-0">💡</div>
                   <div>
                     <p className="text-sm text-indigo-700">
-                      设备使用已超{progress}%，是否考虑更新换代？
+                      {t('product.upgrade.tip', { progress })}
                     </p>
                     <a 
                       href={`https://example.com/rebate?category=${product.category}`}
@@ -160,7 +163,7 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
                       rel="noopener noreferrer"
                       className="mt-2 inline-flex items-center text-xs text-indigo-600 hover:text-indigo-700"
                     >
-                      查看同类产品返利优惠 →
+                      {t('product.upgrade.viewDeals')}
                     </a>
                   </div>
                 </div>
@@ -170,14 +173,18 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
 
           <div className="grid grid-cols-2 gap-4 pt-4">
             <div className="text-center p-3 bg-gray-50 rounded-lg">
-              <p className="text-xs text-gray-500 mb-1">当前均值</p>
+              <p className="text-xs text-gray-500 mb-1">{t('product.costPerDay.current')}</p>
               <p className="font-semibold">
-                ￥{daysOwned === 1 ? product.price.toFixed(1) : costPerDay}/天
+                {t('product.costPerDay.unit', { 
+                  value: daysOwned === 1 ? product.price.toFixed(1) : costPerDay 
+                })}
               </p>
             </div>
             <div className="text-center p-3 bg-gray-50 rounded-lg">
-              <p className="text-xs text-gray-500 mb-1">期待均值</p>
-              <p className="font-semibold">￥{expectedCostPerDay}/天</p>
+              <p className="text-xs text-gray-500 mb-1">{t('product.costPerDay.expected')}</p>
+              <p className="font-semibold">
+                {t('product.costPerDay.unit', { value: expectedCostPerDay })}
+              </p>
             </div>
           </div>
 
@@ -185,13 +192,13 @@ function ProductCard({ product, onDelete, onEdit }: ProductCardProps) {
             <div className="pt-4 border-t space-y-3">
               {product.notes && (
                 <div>
-                  <p className="text-sm text-gray-500 mb-1">备注</p>
+                  <p className="text-sm text-gray-500 mb-1">{t('product.notes')}</p>
                   <p className="text-sm">{product.notes}</p>
                 </div>
               )}
               {product.reason_to_buy && (
                 <div>
-                  <p className="text-sm text-gray-500 mb-1">购买原因</p>
+                  <p className="text-sm text-gray-500 mb-1">{t('product.reasonToBuy')}</p>
                   <p className="text-sm">{product.reason_to_buy}</p>
                 </div>
               )}
