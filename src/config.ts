@@ -18,7 +18,7 @@ const config: InitOptions = {
   fallbackLng: {
     'zh': ['zh-CN'],
     'en': ['en-US'],
-    default: ['zh-CN']
+    default: ['en-US']
   },
   supportedLngs: ['zh-CN', 'en-US', 'zh', 'en'],
   load: 'currentOnly',

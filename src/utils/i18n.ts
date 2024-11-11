@@ -7,7 +7,6 @@ export function useTypedTranslation() {
   const mapLanguageCode = (lang: string): string => {
     const lowerLang = lang.toLowerCase();
     if (lowerLang.startsWith('zh')) return 'zh-CN';
-    if (lowerLang.startsWith('en')) return 'en-US';
     return 'en-US';
   };
 

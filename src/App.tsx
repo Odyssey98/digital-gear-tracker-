@@ -35,9 +35,8 @@ function App() {
   const { i18n } = useTranslation();
 
   useEffect(() => {
-    // 简单的语言初始化
-    const lang = navigator.language.startsWith('zh') ? 'zh-CN' : 'en-US';
-    i18n.changeLanguage(lang);
+    // 直接设置为英文
+    i18n.changeLanguage('en-US');
   }, [i18n]);
 
   return (
